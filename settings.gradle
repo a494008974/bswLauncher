@@ -1,1 +1,8 @@
-include ':app', ':CommonSDK', ':CommonService', ':CommonRes', ':module-zhihu', ':module-gank', 'module-gold'
+include ':app', ':module-launcher',
+        ':CommonSDK',
+        ':CommonService',
+        ':CommonRes',
+        ':module-zhihu',
+        ':module-gank',
+        ':module-zhou',
+        'module-gold', ':ThirdLibrarys:tvrecyclerview'

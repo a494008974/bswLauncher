@@ -9,8 +9,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/public_height_830px"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/public_height_494px"
         android:background="@color/public_colorPrimaryDark"
         app:lottie_autoPlay="true"
         app:lottie_fileName="animation-lottie-splash.json"
@@ -21,13 +21,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-
         <Button
             android:id="@+id/bt_zhihu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/public_background"
+            android:background="@drawable/public_module_btn_bg"
             tools:text="@string/public_name_zhihu"
             android:textColor="@color/public_color_959292"
             android:textSize="@dimen/public_font_24sp"
@@ -38,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/public_background"
+            android:background="@drawable/public_module_btn_bg"
             tools:text="@string/public_name_gank"
             android:textColor="@color/public_color_959292"
             android:textSize="@dimen/public_font_24sp"
@@ -49,8 +48,30 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/public_background"
+            android:background="@drawable/public_module_btn_bg"
             tools:text="@string/public_name_gold"
+            android:textColor="@color/public_color_959292"
+            android:textSize="@dimen/public_font_24sp"
+            />
+
+        <Button
+            android:id="@+id/bt_zhou"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/public_module_btn_bg"
+            android:text="@string/public_name_zhou"
+            android:textColor="@color/public_color_959292"
+            android:textSize="@dimen/public_font_24sp"
+            tools:text="@string/public_name_zhou" />
+
+        <Button
+            android:id="@+id/bt_launcher"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/public_module_btn_bg"
+            android:text="@string/public_name_launcher"
             android:textColor="@color/public_color_959292"
             android:textSize="@dimen/public_font_24sp"
             />

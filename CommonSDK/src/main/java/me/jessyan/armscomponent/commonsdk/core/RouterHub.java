@@ -46,6 +46,8 @@ public interface RouterHub {
     String ZHIHU = "/zhihu";//知乎组件
     String GANK = "/gank";//干货集中营组件
     String GOLD = "/gold";//稀土掘金组件
+    String LAUNCHER = "/launcher"; //桌面
+    String ZHOU = "/zhou";  //测试
 
     /**
      * 服务组件, 用于给每个组件暴露特有的服务
@@ -82,4 +84,21 @@ public interface RouterHub {
 
     String GOLD_HOMEACTIVITY = GOLD + "/HomeActivity";
     String GOLD_DETAILACTIVITY = GOLD + "/DetailActivity";
+
+    /**
+     * 测试分组
+     */
+    String ZHOU_SERVICE_ZHOUINFOSERVICE = ZHOU + SERVICE + "/ZhouInfoService";
+
+    String ZHOU_HOMEACTIVITY = ZHOU + "/HomeActivity";
+    String ZHOU_MAINACTIVITY = ZHOU + "/MainActivity";
+
+    /**
+     * 桌面分组
+     */
+    String LAUNCHER_SERVICE_LAUNCHERINFOSERVICE = LAUNCHER + SERVICE + "/LauncherInfoService";
+
+    String LAUNCHER_HOMEACTIVITY = LAUNCHER + "/HomeActivity";
+    String LAUNCHER_MOREACTIVITY = LAUNCHER + "/MoreActivity";
+
 }
