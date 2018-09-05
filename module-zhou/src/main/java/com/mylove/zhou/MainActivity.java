@@ -6,8 +6,6 @@ import android.os.Bundle;
 import com.alibaba.android.arouter.facade.annotation.Route;
 
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
-import me.jessyan.armscomponent.commonservice.CommonApp;
-import me.jessyan.armscomponent.commonservice.launcher.bean.Element;
 
 @Route(path = RouterHub.ZHOU_MAINACTIVITY)
 public class MainActivity extends AppCompatActivity {
