@@ -4,16 +4,16 @@ if (isBuildModule.toBoolean()) {
     apply plugin: 'com.android.library'
 }
 apply plugin: 'com.jakewharton.butterknife'
-
+apply plugin: 'me.tatarka.retrolambda'  //lambda配置
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
     useLibrary 'org.apache.http.legacy'
 
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.android["minSdkVersion"]

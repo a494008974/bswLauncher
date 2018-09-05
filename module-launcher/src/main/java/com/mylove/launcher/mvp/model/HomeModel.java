@@ -5,12 +5,22 @@ import android.content.Context;
 import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.mvp.BaseModel;
+import com.jess.arms.utils.DataHelper;
+import com.mylove.launcher.app.utils.AppUtils;
 import com.mylove.launcher.mvp.contract.HomeContract;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import me.jessyan.armscomponent.commonservice.CommonApp;
-import me.jessyan.armscomponent.commonservice.dao.ElementDao;
 import me.jessyan.armscomponent.commonservice.launcher.bean.Element;
 
 
@@ -39,9 +49,45 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
 
     @Override
     public void fetchDao(Context context) {
-        Element element = new Element();
-        element.setTag("33304444");
-        element.setPkg(context.getPackageName());
-        CommonApp.getInstance().getDaoSession().getElementDao().insertOrReplace(element);
+
     }
+
+    @Override
+    public List<String> fetchHomeShortCut(Context context) {
+        String homeShortCut = DataHelper.getStringSF(context,"Home_Shortcut");
+        if(homeShortCut == null){
+            String shortCutDefault = fetchDefault(context);
+            String[] shorts = shortCutDefault.split(":");
+            if(shorts.length > 1){
+                homeShortCut = shorts[1];
+                DataHelper.setStringSF(context,"Home_Shortcut",homeShortCut);
+            }
+        }
+        String[] homes = homeShortCut.split(";");
+        List<String> lists = new ArrayList<String>();
+        for (String s:homes) {
+            if(AppUtils.isAppInstalled(context,s)){
+                lists.add(s);
+            }
+        }
+        return lists;
+    }
+
+    public String fetchDefault(Context context){
+        StringBuffer sb = new StringBuffer();
+        try {
+            InputStream inputStream = context.getAssets().open("default_shortcut");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String data = null;
+            while((data = bufferedReader.readLine())!=null)
+            {
+                sb.append(data);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
 }

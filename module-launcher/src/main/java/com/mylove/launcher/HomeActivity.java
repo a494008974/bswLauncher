@@ -5,36 +5,47 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
-import com.jess.arms.utils.ArmsUtils;
-import com.mylove.launcher.app.utils.BeanUtils;
+import com.mylove.launcher.app.utils.SystemUtils;
+import com.mylove.launcher.app.utils.ToastUtils;
 import com.mylove.launcher.di.component.DaggerHomeComponent;
 import com.mylove.launcher.focus.FocusBorder;
 import com.mylove.launcher.mvp.contract.HomeContract;
 import com.mylove.launcher.mvp.presenter.HomePresenter;
 import com.mylove.launcher.mvp.ui.adapter.CommonRecyclerViewAdapter;
 import com.mylove.launcher.mvp.ui.adapter.CommonRecyclerViewHolder;
+import com.mylove.launcher.mvp.ui.fragment.MoreFragment;
 import com.owen.tvrecyclerview.widget.SimpleOnItemListener;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
-import me.jessyan.armscomponent.commonservice.launcher.bean.Element;
 
 @Route(path = RouterHub.LAUNCHER_HOMEACTIVITY)
 public class HomeActivity extends BaseActivity<HomePresenter> implements HomeContract.View,View.OnKeyListener{
@@ -42,16 +53,39 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     @BindView(R2.id.tv_recycler_view)
     TvRecyclerView mTvRecyclerView;
 
-    List<Element> elements;
+    List<String> shortcuts = new ArrayList<String>();
     private CommonRecyclerViewAdapter mAdapter;
 
     private long mPressedTime;
 
+    private MoreFragment moreFragment;
+    private List<PackageInfo> packageInfos;
+
     @BindView(R2.id.home_main)
     RelativeLayout mHomeMain;
 
+    @BindView(R2.id.launcher_net)
+    ImageView mLauncherNet;
+
+    @BindView(R2.id.launcher_time)
+    TextView mLauncherTime;
+    @BindView(R2.id.launcher_statu)
+    TextView mLauncherStatu;
+    @BindView(R2.id.launcher_date)
+    TextView mLauncherDate;
+    @BindView(R2.id.launcher_week)
+    TextView mLauncherWeek;
+    @BindView(R2.id.launcher_focus_tv)
+    TextView mLauncherFocusTv;
+
+    private Handler mHandler;
+
+    private ImageView anim;
+    private boolean clearDone;
+    private PackageManager packageManager;
     protected FocusBorder mFocusBorder;
 
+    private boolean dismiss;
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
         DaggerHomeComponent
@@ -67,44 +101,99 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         return R.layout.launcher_activity_main;
     }
 
+    public void initPackageInfo(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                packageInfos = SystemUtils.getAllApps(HomeActivity.this,3,true);
+            }
+        }.start();
+    }
+
     private void initFocusBorder() {
         if(null == mFocusBorder) {
             mFocusBorder = new FocusBorder.Builder()
                     .asColor()
                     .borderColor(getResources().getColor(R.color.public_white))
                     .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3)
-                    .shadowColor(getResources().getColor(R.color.public_white))
+//                    .shadowColor(getResources().getColor(R.color.public_white))
                     .animDuration(180L)
                     .build(this);
         }
     }
 
+    public void showTime(){
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/Roboto-Thin.ttf");
+        mLauncherTime.setTypeface(typeface);
+        mLauncherStatu.setTypeface(typeface);
+        mLauncherDate.setTypeface(typeface);
+        mLauncherWeek.setTypeface(typeface);
+
+        mLauncherTime.setText(SystemUtils.getTime(HomeActivity.this));
+        mLauncherStatu.setText(SystemUtils.getStatu());
+        mLauncherDate.setText(SystemUtils.getDate());
+        mLauncherWeek.setText(SystemUtils.getWeek());
+    }
+
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
+        packageManager = this.getPackageManager();
+        mHandler = new Handler();
+
         initFocusBorder();
         initListener();
+        initPackageInfo();
 
-        mAdapter = new CommonRecyclerViewAdapter<Element>(this) {
+        showTime();
+
+        mAdapter = new CommonRecyclerViewAdapter<String>(this) {
             @Override
             public int getItemLayoutId(int viewType) {
                 return R.layout.launcher_home_menu;
             }
 
             @Override
-            public void onBindItemHolder(CommonRecyclerViewHolder helper, Element item, int position) {
+            public void onBindItemHolder(CommonRecyclerViewHolder helper, String item, int position) {
+                if (position == 0){
+                    helper.itemView.setId(R.id.launcher_shortcut_start);
+                    helper.itemView.setNextFocusLeftId(R.id.launcher_shortcut_start);
+                }else if(position == mAdapter.getItemCount() - 1){
+                    helper.itemView.setId(R.id.launcher_shortcut_end);
+                    helper.itemView.setNextFocusRightId(R.id.launcher_shortcut_end);
+                }
+                helper.getHolder().setImageResource(R.id.shortcut_icon,R.drawable.launcher_default_icon);
+                if(HomeActivity.this.getPackageName().equals(item))return;
+                PackageInfo pkgInfo = null;
+                try {
+                    pkgInfo = packageManager.getPackageInfo(item, PackageManager.GET_PERMISSIONS);
+                } catch (PackageManager.NameNotFoundException e) {
+                }
+                if(pkgInfo == null)return;
+
+                helper.getHolder().setImageDrawable(R.id.shortcut_icon,packageManager.getApplicationIcon(pkgInfo.applicationInfo));
 
             }
         };
 
-        elements = BeanUtils.initSize(20);
-        mAdapter.setDatas(elements);
+        mAdapter.setDatas(shortcuts);
         mTvRecyclerView.setSpacingWithMargins(5,5);
         mTvRecyclerView.setAdapter(mAdapter);
 
         if(mPresenter != null){
             mPresenter.fetchHomeData();
+            mPresenter.fetchHomeShortCut(this);
             mPresenter.fetchDao(this);
         }
+        register();
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregister();
     }
 
     protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
@@ -118,7 +207,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         if(mHomeMain != null){
             for (int i = 0; i< mHomeMain.getChildCount(); i++){
                 View view = mHomeMain.getChildAt(i);
-                view.setTag("10"+i);
+                view.setTag("10"+(i+1));
                 view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
@@ -136,17 +225,91 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
                 onMoveFocusBorder(itemView, 1.05f, 0);
+                String s = (String) mAdapter.getItem(position);
+                if(HomeActivity.this.getPackageName().equals(s)){
+                    s = getString(R.string.launcher_paste);
+                }else{
+                    try {
+                        PackageInfo pkgInfo = packageManager.getPackageInfo(s, PackageManager.GET_PERMISSIONS);
+                        s = (String) packageManager.getApplicationLabel(pkgInfo.applicationInfo);
+                    } catch (PackageManager.NameNotFoundException e) {
+                    }
+                }
+                mLauncherFocusTv.setText(s);
+                Animation tvAnim = AnimationUtils.loadAnimation(HomeActivity.this, R.anim.launcher_tv_translate_1);
+                mLauncherFocusTv.startAnimation(tvAnim);
             }
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+                String pkg = (String) mAdapter.getItem(position);
+                if(HomeActivity.this.getPackageName().equals(pkg)){
+                    showFragment(MoreFragment.SELECT_FRAGMENT);
+                }else{
+                    SystemUtils.openApk(HomeActivity.this,pkg);
+                }
+            }
+        });
 
+        mTvRecyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    Animation tvAnim = AnimationUtils.loadAnimation(HomeActivity.this, R.anim.launcher_tv_translate_2);
+                    mLauncherFocusTv.startAnimation(tvAnim);
+                }
             }
         });
     }
 
+    public void showFragment(String type){
+        moreFragment = MoreFragment.newInstance();
+        if(moreFragment != null){
+            if (!moreFragment.isAdded()){
+                if (packageInfos == null) {
+                    packageInfos = SystemUtils.getAllApps(HomeActivity.this,3,true);
+                }
+                moreFragment.setType(type);
+                if(MoreFragment.SELECT_FRAGMENT.equals(type)){
+                    moreFragment.setSelectListener(new MoreFragment.SelectListener() {
+                        @Override
+                        public void onItemClick(TvRecyclerView parent, View itemView, int position, Object item) {
+                            PackageInfo info = (PackageInfo)item;
+                            View view = itemView.findViewById(R.id.launcher_item_check);
+                            if(view.getVisibility() == View.VISIBLE){
+                                view.setVisibility(View.GONE);
+                                mPresenter.removeHomeShortCut(HomeActivity.this,info.applicationInfo.packageName);
+                            }else{
+                                view.setVisibility(View.VISIBLE);
+                                mPresenter.addHomeShortCut(HomeActivity.this,info.applicationInfo.packageName);
+                            }
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            dismiss = true;
+                            mPresenter.fetchHomeShortCut(HomeActivity.this);
+                        }
+                    });
+                }
+
+                if(MoreFragment.CHECK_FRAGMENT.equals(type)){
+                    moreFragment.setCheckListener(new MoreFragment.CheckListener() {
+                        @Override
+                        public void onItemClick(TvRecyclerView parent, View itemView, int position, Object item) {
+
+                        }
+                    });
+                }
+                moreFragment.setPackageInfos(packageInfos);
+                moreFragment.show(getSupportFragmentManager(),type);
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
+        /*
         //获取第一次按键时间
         long mNowTime = System.currentTimeMillis();
         //比较两次按键时间差
@@ -157,11 +320,33 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         } else {
             super.onBackPressed();
         }
+        */
     }
 
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    @Override
+    public void showHomeShortCut(List<String> shortcuts) {
+        if (shortcuts == null) return;
+        int select = shortcuts.size() - 1;
+        mAdapter.setDatas(shortcuts);
+        mTvRecyclerView.setAdapter(mAdapter);
+
+        if(mTvRecyclerView != null){
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("select ======== "+select);
+                    if(dismiss){
+                        mTvRecyclerView.setSelection(select);
+                        dismiss = false;
+                    }
+                }
+            },10);
+        }
     }
 
     @Override
@@ -195,12 +380,74 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             switch (keyCode){
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
-                    System.out.println("v.getTag = "+v.getTag());
-                    Toast.makeText(HomeActivity.this,String.valueOf(v.getTag()),Toast.LENGTH_LONG).show();
+                    String tag = String.valueOf(v.getTag());
+                    switch (tag){
+                        case "101":
+                            SystemUtils.openApk(this,"org.xbmc.kodi");
+                            break;
+                        case "102":
+                            SystemUtils.openApk(this,"com.android.vending");
+                            break;
+                        case "103":
+                            SystemUtils.openApk(this,"com.google.android.youtube.tv");
+                            break;
+                        case "104":
+                            SystemUtils.openApk(this,"com.droidlogic.FileBrower");
+                            break;
+                        case "105":
+                            SystemUtils.openApk(this,"com.android.chrome");
+                            break;
+                        case "106":
+                            //settings
+                            if(SystemUtils.openApk(this,"com.mbox.settings")){
+                                return true;
+                            }
+                            SystemUtils.openApk(this,"com.android.tv.settings");
+                            break;
+                        case "107":
+                            //memory recycle
+                            View clear = ((ViewGroup)v).getChildAt(0);
+                            if(clear != null && clear instanceof ImageView){
+                                anim = (ImageView) clear;
+                                AnimationDrawable animationDrawable = (AnimationDrawable)anim.getBackground();
+                                animationDrawable.start();
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        animationDrawable.stop();
+                                        if(!clearDone){
+                                            clearDone = true;
+                                            new ClearAsyn().execute();
+                                        }
+                                    }
+                                },1600);
+                            }
+                            break;
+                        case "108":
+                            showFragment(MoreFragment.MORE_FRAGMENT);
+                            break;
+                    }
                     break;
             }
         }
         return false;
+    }
+
+    private class ClearAsyn extends AsyncTask<Void,Void,Integer>{
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            int mem = SystemUtils.clearMemory(HomeActivity.this);
+            return mem;
+        }
+
+        @Override
+        protected void onPostExecute(Integer recycle) {
+            super.onPostExecute(recycle);
+            String s = String.format(getString(R.string.launcher_mem_clear),recycle);
+            ToastUtils.showCenter(HomeActivity.this,s);
+            clearDone = false;
+        }
     }
 
     //=======================广播====================
@@ -265,6 +512,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             }else if(intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")){
 
             }
+            initPackageInfo();
         }
     }
 
@@ -290,8 +538,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_TIME_TICK)) {
-//                timeTextView.setText(SystemUtils.getTime(MainActivity.this));
-//                weekTextView.setText(SystemUtils.getWeek());
+                showTime();
             }
         }
     }
@@ -309,14 +556,14 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                 if(mNetworkInfo != null && mNetworkInfo.isAvailable()){
                     switch (mNetworkInfo.getType()) {
                         case  ConnectivityManager.TYPE_WIFI:
-//                            netImageView.setImageResource(R.drawable.wifi_normal);
+                            mLauncherNet.setImageResource(R.drawable.launcher_iv_wifi);
                             break;
                         case  ConnectivityManager.TYPE_ETHERNET:
-//                            netImageView.setImageResource(R.drawable.net_normal);
+                            mLauncherNet.setImageResource(R.drawable.launcher_iv_net);
                             break;
                     }
                 }else{
-//                    netImageView.setImageResource(R.drawable.net_no_normal);
+                    mLauncherNet.setImageBitmap(null);
                 }
             }
         }

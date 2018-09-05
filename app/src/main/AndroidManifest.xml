@@ -39,7 +39,6 @@
         android:icon="@mipmap/arms_component_logo"
         android:label="@string/public_app_name"
         android:supportsRtl="true"
-        tools:replace="android:name"
         android:theme="@style/public_AppTheme">
         <activity android:name=".mvp.ui.activity.SplashActivity"
                   android:theme="@style/SplashTheme"

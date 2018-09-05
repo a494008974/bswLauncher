@@ -1,17 +1,17 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
     useLibrary 'org.apache.http.legacy'
 
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//    }
 
     defaultConfig {
-        applicationId "me.jessyan.armscomponent.app"
+        applicationId "com.mylove.mbox.launcher"
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
@@ -37,8 +37,8 @@ android {
             buildConfigField "boolean", "USE_CANARY", "false"
             buildConfigField "boolean", "IS_BUILD_MODULE", "${isBuildModule}"
             minifyEnabled true
-            shrinkResources true
-            zipAlignEnabled true
+//            shrinkResources true
+//            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

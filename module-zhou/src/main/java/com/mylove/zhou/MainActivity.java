@@ -19,10 +19,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(RouterHub.ZHOU_MAINACTIVITY);
         setContentView(R.layout.zhou_activity_main);
 
-        Element element = new Element();
-        element.setTag("6666666");
-        element.setPkg(this.getPackageName());
-        CommonApp.getInstance().getDaoSession().getElementDao().insert(element);
+
 
 //        ZhouApp.getInstance().getDaoSession().getElementDao().insertOrReplace(element);
     }

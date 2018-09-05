@@ -4,18 +4,20 @@ if (isBuildModule.toBoolean()) {
     apply plugin: 'com.android.library'
 }
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'me.tatarka.retrolambda'  //lambda配置
+//apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
 
     useLibrary 'org.apache.http.legacy'
 
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//    }
 
     defaultConfig {
+        applicationId "com.mylove.mbox.launcher"
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
@@ -83,7 +85,7 @@ dependencies {
     api project(':CommonRes')
     api project(':CommonService')
 
-    api rootProject.ext.dependencies["greendao"]
+//    api rootProject.ext.dependencies["greendao"]
     if (isBuildModule.toBoolean()) {
         //view
         annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {

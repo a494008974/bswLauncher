@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="launcher_shortcut_start" type="id" />
+    <item name="launcher_shortcut_end" type="id" />
+</resources>

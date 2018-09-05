@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/launcher_shape_bg_toast"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingRight="40dp"
+    android:paddingLeft="40dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="32dp"
+        android:textColor="@color/public_color_FF06CB7E" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:textSize="28dp"
+        android:text="@string/launcher_mem_msg"
+        android:textColor="@color/public_black" />
+</LinearLayout>

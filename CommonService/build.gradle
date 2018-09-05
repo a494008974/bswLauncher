@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'me.tatarka.retrolambda'  //lambda配置
+//apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
@@ -25,5 +26,5 @@ dependencies {
     compileOnly rootProject.ext.dependencies["arouter"]
     compileOnly rootProject.ext.dependencies["appcompat-v7"]
     compileOnly 'me.jessyan:arms:2.4.1'
-    compileOnly rootProject.ext.dependencies["greendao"]
+//    compileOnly rootProject.ext.dependencies["greendao"]
 }

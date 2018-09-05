@@ -1,3 +1,17 @@
 <resources>
-    <string name="app_name">module-launcher</string>
+    <string name="launcher_app_name">MBoxLauncher</string>
+
+    <string name="launcher_tv_center">TV Center</string>
+    <string name="launcher_google_play">Google Play Store</string>
+    <string name="launcher_youtube">YouTube</string>
+    <string name="launcher_file_browser">FileBrowser</string>
+    <string name="launcher_chrome">Chrome</string>
+    <string name="launcher_settings">Settings</string>
+    <string name="launcher_memory_recycle">Memory Recycle</string>
+    <string name="launcher_apps">Apps</string>
+    <string name="launcher_applications">Applications</string>
+
+    <string name="launcher_mem_clear">%dMB</string>
+    <string name="launcher_mem_msg">memory has been recycled.</string>
+    <string name="launcher_paste">Paste</string>
 </resources>

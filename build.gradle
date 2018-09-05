@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'me.tatarka:gradle-retrolambda:3.7.0'     //lambda配置
         //classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         //如果 ButterKnife 插件和其他插件发生冲突而报错请试试 v8.4.0 版本的 ButterKnife 插件, 注意 v8.4.0 最高只能支持 com.android.tools.build:gradle:3.0.1
