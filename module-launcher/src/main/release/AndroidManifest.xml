@@ -10,7 +10,15 @@
             android:name="com.mylove.launcher.app.GlobalConfiguration"
             android:value="ConfigModule" />
 
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".mvp.ui.MoreActivity"></activity>
     </application>
 

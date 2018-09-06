@@ -399,10 +399,14 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                             break;
                         case "106":
                             //settings
-                            if(SystemUtils.openApk(this,"com.mbox.settings")){
-                                return true;
+                            try{
+                                Intent intent = new Intent();
+                                intent.setClassName("com.android.tv.settings","com.mylove.tv.settings.MainActivity");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                HomeActivity.this.startActivity(intent);
+                            }catch (Exception e){
+
                             }
-                            SystemUtils.openApk(this,"com.android.tv.settings");
                             break;
                         case "107":
                             //memory recycle

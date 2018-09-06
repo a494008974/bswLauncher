@@ -61,13 +61,17 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
             if(shorts.length > 1){
                 homeShortCut = shorts[1];
                 DataHelper.setStringSF(context,"Home_Shortcut",homeShortCut);
+            }else{
+                DataHelper.setStringSF(context,"Home_Shortcut","");
             }
         }
-        String[] homes = homeShortCut.split(";");
         List<String> lists = new ArrayList<String>();
-        for (String s:homes) {
-            if(AppUtils.isAppInstalled(context,s)){
-                lists.add(s);
+        if(homeShortCut != null){
+            String[] homes = homeShortCut.split(";");
+            for (String s:homes) {
+                if(AppUtils.isAppInstalled(context,s)){
+                    lists.add(s);
+                }
             }
         }
         return lists;
