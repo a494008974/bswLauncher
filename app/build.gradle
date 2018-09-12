@@ -11,7 +11,7 @@ android {
 //    }
 
     defaultConfig {
-        applicationId "com.mylove.mbox.launcher"
+        applicationId "com.mylove.mbox.zhou"
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
@@ -58,8 +58,8 @@ dependencies {
 //        runtimeOnly project(":module-zhihu")
 //        runtimeOnly project(":module-gank")
 //        runtimeOnly project(":module-gold")
-//        runtimeOnly project(":module-zhou")
-        runtimeOnly project(":module-launcher")
+        runtimeOnly project(":module-zhou")
+//        runtimeOnly project(":module-launcher")
     }
     implementation project(":CommonRes")//因为 CommonRes 依赖了 CommonSDK, 所以如果业务模块需要公共 UI 组件就依赖 CommonRes, 如果不需要就只依赖 CommonSDK
     implementation project(":CommonService")

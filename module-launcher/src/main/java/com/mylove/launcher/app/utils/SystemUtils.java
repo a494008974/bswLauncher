@@ -20,6 +20,7 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -416,33 +417,90 @@ public class SystemUtils {
 		}
 	}
 
-	/**
-	 * 清理内存
-	 *
-	 * @param context
-	 */
-	public static int clearMemory(Context context) {
+	public static void forceApp(List<ActivityManager.RunningAppProcessInfo> list){
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				ActivityManager.RunningAppProcessInfo apinfo = list.get(i);
+				ShellForceStopAPK(apinfo.processName);
+			}
+		}
+	}
+
+	public static int clearMemory(Context context,List<ActivityManager.RunningAppProcessInfo> list){
 		ActivityManager activityManger = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningAppProcessInfo> list = activityManger.getRunningAppProcesses();
 		int sum = 0;
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				ActivityManager.RunningAppProcessInfo apinfo = list.get(i);
-				String[] pkgList = apinfo.pkgList;
-				if (apinfo.importance > ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
-					for (int j = 0; j < pkgList.length; j++) {
-						/**清理不可用的内容空间**/
-						activityManger.killBackgroundProcesses(pkgList[j]);
-					}
-					int[] myMempid = new int[]{apinfo.pid};
-					Debug.MemoryInfo[] appMem = activityManger.getProcessMemoryInfo(myMempid);
-					int memSize = appMem[0].dalvikPrivateDirty / 1024;
-					sum += memSize;
-				}
+				int[] myMempid = new int[]{apinfo.pid};
+				Debug.MemoryInfo[] appMem = activityManger.getProcessMemoryInfo(myMempid);
+				int memSize = appMem[0].getTotalPrivateDirty() / 1024;
+				sum += memSize;
 			}
 		}
 		return sum;
 	}
+
+	public static List<ActivityManager.RunningAppProcessInfo> getRunningApp(Context context){
+		ActivityManager activityManger = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> list = activityManger.getRunningAppProcesses();
+		List<ActivityManager.RunningAppProcessInfo> clearList = new ArrayList<ActivityManager.RunningAppProcessInfo>();
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				ActivityManager.RunningAppProcessInfo apinfo = list.get(i);
+				String[] pkgList = apinfo.pkgList;
+				String processName = apinfo.processName;
+				if (processName != null && (
+						"system".equals(processName)
+								|| "com.android.phone".equals(processName)
+								|| "android.process.acore".equals(processName)
+								|| "com.yunos.tv.probe".equals(processName)
+								|| "com.ph.remote".equals(processName)
+								|| "com.linkin.provider".equals(processName)
+								||  context.getPackageName().equals(processName)
+								|| "com.voole.epg".equals(processName)
+								|| "com.rockitv.ai".equals(processName)
+								|| "com.rockitv.android".equals(processName)
+								|| "com.iflytek.xiri2.system".equals(processName)
+								|| "tv.yuyin".equals(processName)
+								|| "com.ce3g.android.v5im".equals(processName)
+								|| "com.cibn.tv".equals(processName)
+								|| "com.gitvdemobsw.video".equals(processName)
+								|| "com.android.inputmethod.latin".equals(processName)
+								|| "com.android.inputmethod.pinyin".equals(processName)
+								|| "com.tvuoo.tvconnector".equals(processName)
+								|| "com.sohu.inputmethod.sogoupad".equals(processName)
+								|| "com.ce3g.android.v5im".equals(processName)
+								|| processName.contains("com.hpplay")
+								|| processName.contains("com.mylove")
+								|| processName.contains("com.softwinner")
+								|| processName.contains("com.android")
+				)){
+					continue;
+				}
+				clearList.add(apinfo);
+			}
+		}
+		return clearList;
+	}
+
+
+	public static void ShellForceStopAPK(String pkgName) {
+		Process sh = null;
+		try {
+			final String Command = "am force-stop " + pkgName + "\n";
+			sh = Runtime.getRuntime().exec(Command);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
+		try {
+			sh.waitFor();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 
 	/**
 	 * 获取每个APP占用的内存

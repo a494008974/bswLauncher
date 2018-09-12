@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">module-zhou</string>
+    <string name="zhou_app_name">module-zhou</string>
+
+    <string name="zhou_msg">　　　　　　　　　　　　　　　新西兰盖亚传媒www.nzdmg.com　　　　　　　　　　　　　　　</string>
 </resources>

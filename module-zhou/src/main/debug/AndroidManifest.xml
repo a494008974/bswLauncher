@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sharedUserId="android.uid.system"
     package="com.mylove.zhou">
 
+    <!--android:sharedUserId="android.uid.system"-->
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -14,9 +18,9 @@
         android:name="me.jessyan.armscomponent.commonservice.CommonApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/zhou_app_name"
         android:supportsRtl="true"
-        android:theme="@style/public_AppTheme">
+        android:theme="@style/public_AppTheme_Transparent">
 
         <!--
         autolayout meta
@@ -43,12 +47,22 @@
             android:name="com.mylove.zhou.app.GlobalConfiguration"
             android:value="ConfigModule" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/public_AppTheme_Transparent_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".CoreReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.mylove.zhou.CoreReceiver"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

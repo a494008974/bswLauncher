@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mylove.launcher">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
     <application >
 
         <!-- 在组件集成宿主时, 由于宿主已经声明了 CommonSDK 的公有 ConfigModule, 所以在这里只需要声明业务组件自己的 ConfigModule -->

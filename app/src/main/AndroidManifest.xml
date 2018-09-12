@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="me.jessyan.armscomponent.app">
-
+    <!--android:sharedUserId="android.uid.system"-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -32,6 +32,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
     <application
         android:name="me.jessyan.armscomponent.commonservice.CommonApp"

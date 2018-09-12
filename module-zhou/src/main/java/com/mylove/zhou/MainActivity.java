@@ -14,11 +14,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println(RouterHub.ZHOU_MAINACTIVITY);
-        setContentView(R.layout.zhou_activity_main);
-
-
-
-//        ZhouApp.getInstance().getDaoSession().getElementDao().insertOrReplace(element);
+        MessageToast messageToast = new MessageToast(this);
+        messageToast.setContent(R.layout.zhou_message_toast);
+        messageToast.display();
+        finish();
     }
 }

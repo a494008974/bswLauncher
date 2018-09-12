@@ -1,6 +1,7 @@
 package com.mylove.launcher;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -85,6 +86,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     private PackageManager packageManager;
     protected FocusBorder mFocusBorder;
 
+    private AnimationDrawable animationDrawable;
     private boolean dismiss;
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -183,7 +185,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         if(mPresenter != null){
             mPresenter.fetchHomeData();
             mPresenter.fetchHomeShortCut(this);
-            mPresenter.fetchDao(this);
+//            mPresenter.fetchDao(this);
         }
         register();
     }
@@ -331,7 +333,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     @Override
     public void showHomeShortCut(List<String> shortcuts) {
         if (shortcuts == null) return;
-        int select = shortcuts.size() - 1;
+        final int select = shortcuts.size() - 1;
         mAdapter.setDatas(shortcuts);
         mTvRecyclerView.setAdapter(mAdapter);
 
@@ -339,7 +341,6 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println("select ======== "+select);
                     if(dismiss){
                         mTvRecyclerView.setSelection(select);
                         dismiss = false;
@@ -413,12 +414,11 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                             View clear = ((ViewGroup)v).getChildAt(0);
                             if(clear != null && clear instanceof ImageView){
                                 anim = (ImageView) clear;
-                                AnimationDrawable animationDrawable = (AnimationDrawable)anim.getBackground();
+                                animationDrawable = (AnimationDrawable)anim.getBackground();
                                 animationDrawable.start();
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        animationDrawable.stop();
                                         if(!clearDone){
                                             clearDone = true;
                                             new ClearAsyn().execute();
@@ -437,20 +437,33 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         return false;
     }
 
-    private class ClearAsyn extends AsyncTask<Void,Void,Integer>{
+    private class ClearAsyn extends AsyncTask<Void,Void,List<ActivityManager.RunningAppProcessInfo>>{
 
         @Override
-        protected Integer doInBackground(Void... voids) {
-            int mem = SystemUtils.clearMemory(HomeActivity.this);
+        protected List<ActivityManager.RunningAppProcessInfo> doInBackground(Void... voids) {
+            List<ActivityManager.RunningAppProcessInfo> mem = SystemUtils.getRunningApp(HomeActivity.this);
             return mem;
         }
 
         @Override
-        protected void onPostExecute(Integer recycle) {
+        protected void onPostExecute(final List<ActivityManager.RunningAppProcessInfo> recycle) {
             super.onPostExecute(recycle);
-            String s = String.format(getString(R.string.launcher_mem_clear),recycle);
+            if(animationDrawable != null){
+                animationDrawable.stop();
+            }
+            int sum = SystemUtils.clearMemory(HomeActivity.this,recycle);
+            String s = String.format(getString(R.string.launcher_mem_clear),sum);
             ToastUtils.showCenter(HomeActivity.this,s);
             clearDone = false;
+
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    SystemUtils.forceApp(recycle);
+                }
+            }.start();
+
         }
     }
 
