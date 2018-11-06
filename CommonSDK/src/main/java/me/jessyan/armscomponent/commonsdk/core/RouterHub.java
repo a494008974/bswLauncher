@@ -48,12 +48,12 @@ public interface RouterHub {
     String GOLD = "/gold";//稀土掘金组件
     String LAUNCHER = "/launcher"; //桌面
     String ZHOU = "/zhou";  //测试
+    String HOTEL = "/hotel"; //酒店
 
     /**
      * 服务组件, 用于给每个组件暴露特有的服务
      */
     String SERVICE = "/service";
-
 
     /**
      * 宿主 App 分组
@@ -66,7 +66,6 @@ public interface RouterHub {
      * 知乎分组
      */
     String ZHIHU_SERVICE_ZHIHUINFOSERVICE = ZHIHU + SERVICE + "/ZhihuInfoService";
-
     String ZHIHU_HOMEACTIVITY = ZHIHU + "/HomeActivity";
     String ZHIHU_DETAILACTIVITY = ZHIHU + "/DetailActivity";
 
@@ -74,14 +73,12 @@ public interface RouterHub {
      * 干货集中营分组
      */
     String GANK_SERVICE_GANKINFOSERVICE = GANK + SERVICE + "/GankInfoService";
-
     String GANK_HOMEACTIVITY = GANK + "/HomeActivity";
 
     /**
      * 稀土掘金分组
      */
     String GOLD_SERVICE_GOLDINFOSERVICE = GOLD + SERVICE + "/GoldInfoService";
-
     String GOLD_HOMEACTIVITY = GOLD + "/HomeActivity";
     String GOLD_DETAILACTIVITY = GOLD + "/DetailActivity";
 
@@ -89,9 +86,7 @@ public interface RouterHub {
      * 测试分组
      */
     String ZHOU_SERVICE_ZHOUINFOSERVICE = ZHOU + SERVICE + "/ZhouInfoService";
-
     String ZHOU_HOMEACTIVITY = ZHOU + "/HomeActivity";
-    String ZHOU_MAINACTIVITY = ZHOU + "/MainActivity";
 
     /**
      * 桌面分组
@@ -100,5 +95,11 @@ public interface RouterHub {
 
     String LAUNCHER_HOMEACTIVITY = LAUNCHER + "/HomeActivity";
     String LAUNCHER_MOREACTIVITY = LAUNCHER + "/MoreActivity";
+
+    /**
+     * 酒店桌面分组
+     */
+    String HOTEL_SERVICE_HOTELINFOSERVICE = HOTEL + SERVICE + "/HotelInfoService";
+    String HOTEL_HOMEACTIVITY = HOTEL + "/HomeActivity";
 
 }

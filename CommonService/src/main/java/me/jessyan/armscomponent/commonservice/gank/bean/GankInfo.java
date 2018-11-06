@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package me.jessyan.armscomponent.commonservice.gank.bean;
+import me.jessyan.armscomponent.commonsdk.core.RouterHub;
+import me.jessyan.armscomponent.commonservice.BaseInfo;
 
 /**
  * ================================================
@@ -22,7 +24,7 @@ package me.jessyan.armscomponent.commonservice.gank.bean;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class GankInfo {
+public class GankInfo implements BaseInfo {
     private String name;
 
     public GankInfo(String name) {
@@ -31,6 +33,11 @@ public class GankInfo {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getUrl() {
+        return RouterHub.GANK_HOMEACTIVITY;
     }
 
     public void setName(String name) {

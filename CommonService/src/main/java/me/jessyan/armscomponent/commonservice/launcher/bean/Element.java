@@ -1,10 +1,13 @@
 package me.jessyan.armscomponent.commonservice.launcher.bean;
 
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * Created by Administrator on 2018/8/18.
  */
-
+@Entity
 public class Element {
     private String tag;
 
@@ -19,7 +22,7 @@ public class Element {
 
     private int colSpan;
     private int rowSpan;
-
+    @Generated(hash = 1012897949)
     public Element(String tag, String pkg, String intent, String way, String url,
             String icon, String type, String changetime, String resurl, int colSpan,
             int rowSpan) {
@@ -35,7 +38,7 @@ public class Element {
         this.colSpan = colSpan;
         this.rowSpan = rowSpan;
     }
-
+    @Generated(hash = 386918278)
     public Element() {
     }
     public String getTag() {
@@ -104,4 +107,6 @@ public class Element {
     public void setRowSpan(int rowSpan) {
         this.rowSpan = rowSpan;
     }
+
+
 }

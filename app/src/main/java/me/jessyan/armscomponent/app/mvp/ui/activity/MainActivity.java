@@ -15,10 +15,14 @@
  */
 package me.jessyan.armscomponent.app.mvp.ui.activity;
 
+import android.app.Activity;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
@@ -27,15 +31,27 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.owen.tvrecyclerview.widget.SimpleOnItemListener;
+import com.owen.tvrecyclerview.widget.TvRecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.jessyan.armscomponent.app.R;
+import me.jessyan.armscomponent.commonres.adapter.CommonRecyclerViewAdapter;
+import me.jessyan.armscomponent.commonres.adapter.CommonRecyclerViewHolder;
+import me.jessyan.armscomponent.commonres.focus.FocusBorder;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
 import me.jessyan.armscomponent.commonsdk.utils.Utils;
+import me.jessyan.armscomponent.commonservice.BaseInfo;
 import me.jessyan.armscomponent.commonservice.gank.service.GankInfoService;
 import me.jessyan.armscomponent.commonservice.gold.service.GoldInfoService;
+import me.jessyan.armscomponent.commonservice.hotel.service.HotelInfoService;
+import me.jessyan.armscomponent.commonservice.launcher.service.LauncherInfoService;
 import me.jessyan.armscomponent.commonservice.zhihu.service.ZhihuInfoService;
+import me.jessyan.armscomponent.commonservice.zhou.service.ZhouInfoService;
 
 /**
  * ================================================
@@ -49,12 +65,9 @@ import me.jessyan.armscomponent.commonservice.zhihu.service.ZhihuInfoService;
  */
 @Route(path = RouterHub.APP_MAINACTIVITY)
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.bt_zhihu)
-    Button mZhihuButton;
-    @BindView(R.id.bt_gank)
-    Button mGankButton;
-    @BindView(R.id.bt_gold)
-    Button mGoldButton;
+
+    @BindView(R.id.main_recycle_view)
+    TvRecyclerView tvRecyclerView;
 
     @Autowired(name = RouterHub.ZHIHU_SERVICE_ZHIHUINFOSERVICE)
     ZhihuInfoService mZhihuInfoService;
@@ -62,8 +75,18 @@ public class MainActivity extends BaseActivity {
     GankInfoService mGankInfoService;
     @Autowired(name = RouterHub.GOLD_SERVICE_GOLDINFOSERVICE)
     GoldInfoService mGoldInfoService;
+    @Autowired(name = RouterHub.LAUNCHER_SERVICE_LAUNCHERINFOSERVICE)
+    LauncherInfoService mLauncherInfoService;
+    @Autowired(name = RouterHub.ZHOU_SERVICE_ZHOUINFOSERVICE)
+    ZhouInfoService mZhouInfoService;
+    @Autowired(name = RouterHub.HOTEL_SERVICE_HOTELINFOSERVICE)
+    HotelInfoService mHotelInfoService;
 
     private long mPressedTime;
+
+    protected FocusBorder mFocusBorder;
+    private CommonRecyclerViewAdapter mAdapter;
+    private List<BaseInfo> baseInfos;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -75,41 +98,86 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
+    private void initFocusBorder(Activity activity) {
+        if(null == mFocusBorder) {
+            mFocusBorder = new FocusBorder.Builder()
+                    .asColor()
+                    .borderColor(getResources().getColor(R.color.public_white))
+                    .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3)
+                    .shadowColor(getResources().getColor(R.color.public_black))
+                    .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 20)
+                    .animDuration(180L)
+                    .build(activity);
+        }
+    }
+
+    public void initInfo(){
+        baseInfos = new ArrayList<BaseInfo>();
+        if (mHotelInfoService != null) {
+            baseInfos.add(mHotelInfoService.getInfo());
+        }
+        if (mZhouInfoService != null) {
+            baseInfos.add(mZhouInfoService.getInfo());
+        }
+        if (mLauncherInfoService != null) {
+            baseInfos.add(mLauncherInfoService.getInfo());
+        }
+        if (mZhihuInfoService != null) {
+            baseInfos.add(mZhihuInfoService.getInfo());
+        }
+        if (mGankInfoService != null) {
+            baseInfos.add(mGankInfoService.getInfo());
+        }
+        if (mGoldInfoService != null) {
+            baseInfos.add(mGoldInfoService.getInfo());
+        }
+    }
+
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
         ARouter.getInstance().inject(this);
-        //这里想展示组件向外提供服务的功能, 模拟下组件向宿主提供一些必要的信息, 这里为了简单就直接返回本地数据不请求网络了
-        loadZhihuInfo();
-        loadGankInfo();
-        loadGoldInfo();
+        initFocusBorder(this);
+        initInfo();
+
+        tvRecyclerView.setSpacingWithMargins(10, 10);
+        setListener();
+
+        mAdapter = new CommonRecyclerViewAdapter<BaseInfo>(this) {
+            @Override
+            public int getItemLayoutId(int viewType) {
+                return R.layout.activity_item;
+            }
+
+            @Override
+            public void onBindItemHolder(CommonRecyclerViewHolder helper, BaseInfo item, int position) {
+                helper.getHolder().setText(R.id.tv_view_name,item.getName());
+            }
+        };
+        mAdapter.setDatas(baseInfos);
+        tvRecyclerView.setAdapter(mAdapter);
     }
 
-    private void loadZhihuInfo() {
-        //当非集成调试阶段, 宿主 App 由于没有依赖其他组件, 所以使用不了对应组件提供的服务
-        if (mZhihuInfoService == null) {
-            mZhihuButton.setEnabled(false);
-            return;
-        }
-        mZhihuButton.setText(mZhihuInfoService.getInfo().getName());
+    private void setListener() {
+        tvRecyclerView.setOnItemListener(new SimpleOnItemListener() {
+            @Override
+            public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+                onMoveFocusBorder(itemView, 1.0f, 0);
+            }
+
+            @Override
+            public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+                BaseInfo info = (BaseInfo)mAdapter.getItem(position);
+                Utils.navigation(MainActivity.this, info.getUrl());
+            }
+        });
     }
 
-    private void loadGankInfo() {
-        //当非集成调试阶段, 宿主 App 由于没有依赖其他组件, 所以使用不了对应组件提供的服务
-        if (mGankInfoService == null) {
-            mGankButton.setEnabled(false);
-            return;
+    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
+        if(null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
         }
-        mGankButton.setText(mGankInfoService.getInfo().getName());
     }
 
-    private void loadGoldInfo() {
-        //当非集成调试阶段, 宿主 App 由于没有依赖其他组件, 所以使用不了对应组件提供的服务
-        if (mGoldInfoService == null) {
-            mGoldButton.setEnabled(false);
-            return;
-        }
-        mGoldButton.setText(mGoldInfoService.getInfo().getName());
-    }
 
     @Override
     public void onBackPressed() {
@@ -125,41 +193,4 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 这里注意下在组件的页面中(使用了 R2 的页面)使用 {@link butterknife.OnClick} 会有概率出现 id 不正确的问题, 使用以下方式解决
-     * <pre>
-     * @OnClick({R2.id.button1, R2.id.button2})
-     * public void Onclick(View view){
-     *      if (view.getId() == R.id.button1){
-     *          ...
-     *      } else if(view.getId() == R.id.button2){
-     *          ...
-     *      }
-     * }
-     * </pre>
-     * <p>
-     * 在注解上使用 R2, 下面使用 R, 并且使用 {@code if else}, 替代 {@code switch}
-     *
-     * @param view
-     */
-    @OnClick({R.id.bt_zhihu, R.id.bt_gank, R.id.bt_gold,R.id.bt_zhou,R.id.bt_launcher})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.bt_zhihu:
-                Utils.navigation(MainActivity.this, RouterHub.ZHIHU_HOMEACTIVITY);
-                break;
-            case R.id.bt_gank:
-                Utils.navigation(MainActivity.this, RouterHub.GANK_HOMEACTIVITY);
-                break;
-            case R.id.bt_gold:
-                Utils.navigation(MainActivity.this, RouterHub.GOLD_HOMEACTIVITY);
-                break;
-            case R.id.bt_zhou:
-                Utils.navigation(MainActivity.this, RouterHub.ZHOU_HOMEACTIVITY);
-                break;
-            case R.id.bt_launcher:
-                Utils.navigation(MainActivity.this, RouterHub.LAUNCHER_HOMEACTIVITY);
-                break;
-        }
-    }
 }

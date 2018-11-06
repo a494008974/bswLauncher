@@ -1,8 +1,11 @@
-include ':app', ':module-launcher',
+include ':app',
+        ':module-launcher',
+        ':module-hotel-launcher',
         ':CommonSDK',
         ':CommonService',
         ':CommonRes',
         ':module-zhihu',
         ':module-gank',
         ':module-zhou',
-        'module-gold', ':ThirdLibrarys:tvrecyclerview'
+        ':module-gold',
+        ':ThirdLibrarys:tvrecyclerview'

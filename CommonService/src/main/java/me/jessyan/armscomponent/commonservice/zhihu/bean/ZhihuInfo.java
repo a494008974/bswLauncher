@@ -15,6 +15,9 @@
  */
 package me.jessyan.armscomponent.commonservice.zhihu.bean;
 
+import me.jessyan.armscomponent.commonsdk.core.RouterHub;
+import me.jessyan.armscomponent.commonservice.BaseInfo;
+
 /**
  * ================================================
  * Created by JessYan on 2018/4/27 14:11
@@ -22,7 +25,7 @@ package me.jessyan.armscomponent.commonservice.zhihu.bean;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class ZhihuInfo {
+public class ZhihuInfo  implements BaseInfo {
     private String name;
 
     public ZhihuInfo(String name) {
@@ -31,6 +34,11 @@ public class ZhihuInfo {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getUrl() {
+        return RouterHub.ZHIHU_HOMEACTIVITY;
     }
 
     public void setName(String name) {

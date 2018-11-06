@@ -30,8 +30,10 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
+import com.jess.arms.utils.ArmsUtils;
 import com.mylove.launcher.app.utils.SystemUtils;
 import com.mylove.launcher.app.utils.ToastUtils;
+
 import com.mylove.launcher.di.component.DaggerHomeComponent;
 import com.mylove.launcher.focus.FocusBorder;
 import com.mylove.launcher.mvp.contract.HomeContract;
@@ -311,7 +313,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
 
     @Override
     public void onBackPressed() {
-        /*
+
         //获取第一次按键时间
         long mNowTime = System.currentTimeMillis();
         //比较两次按键时间差
@@ -322,7 +324,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         } else {
             super.onBackPressed();
         }
-        */
+
     }
 
     @Override

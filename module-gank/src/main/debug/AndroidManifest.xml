@@ -17,9 +17,7 @@
         android:label="@string/gank_module_name"
         android:supportsRtl="true"
         android:theme="@style/public_AppTheme">
-        <activity android:name=".mvp.ui.activity.GankHomeActivity"
-                  android:configChanges="orientation|screenSize"
-                  android:screenOrientation="portrait">
+        <activity android:name=".mvp.ui.activity.GankHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
