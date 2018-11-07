@@ -13,15 +13,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import me.jessyan.armscomponent.commonservice.CommonApp;
-import me.jessyan.armscomponent.commonservice.launcher.bean.Element;
 
 
 /**

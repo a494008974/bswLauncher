@@ -5,7 +5,7 @@ if (isBuildModule.toBoolean()) {
 }
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'me.tatarka.retrolambda'  //lambda配置
-//apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
 
@@ -84,7 +84,7 @@ dependencies {
     api project(':CommonRes')
     api project(':CommonService')
 
-//    api rootProject.ext.dependencies["greendao"]
+    api rootProject.ext.dependencies["greendao"]
     if (isBuildModule.toBoolean()) {
         //view
         annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {

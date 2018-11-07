@@ -16,14 +16,11 @@
 package me.jessyan.armscomponent.app.mvp.ui.activity;
 
 import android.app.Activity;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -38,14 +35,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import me.jessyan.armscomponent.app.R;
 import me.jessyan.armscomponent.commonres.adapter.CommonRecyclerViewAdapter;
 import me.jessyan.armscomponent.commonres.adapter.CommonRecyclerViewHolder;
 import me.jessyan.armscomponent.commonres.focus.FocusBorder;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
 import me.jessyan.armscomponent.commonsdk.utils.Utils;
-import me.jessyan.armscomponent.commonservice.BaseInfo;
+import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 import me.jessyan.armscomponent.commonservice.gank.service.GankInfoService;
 import me.jessyan.armscomponent.commonservice.gold.service.GoldInfoService;
 import me.jessyan.armscomponent.commonservice.hotel.service.HotelInfoService;
