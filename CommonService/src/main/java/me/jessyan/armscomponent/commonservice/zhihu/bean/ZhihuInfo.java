@@ -16,7 +16,7 @@
 package me.jessyan.armscomponent.commonservice.zhihu.bean;
 
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
-import me.jessyan.armscomponent.commonservice.BaseInfo;
+import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 
 /**
  * ================================================

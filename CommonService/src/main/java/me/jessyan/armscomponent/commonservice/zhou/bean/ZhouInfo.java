@@ -1,7 +1,7 @@
 package me.jessyan.armscomponent.commonservice.zhou.bean;
 
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
-import me.jessyan.armscomponent.commonservice.BaseInfo;
+import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 
 /**
  * Created by zhou on 2018/11/5.

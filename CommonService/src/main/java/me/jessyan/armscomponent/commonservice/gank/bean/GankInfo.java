@@ -15,7 +15,7 @@
  */
 package me.jessyan.armscomponent.commonservice.gank.bean;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
-import me.jessyan.armscomponent.commonservice.BaseInfo;
+import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 
 /**
  * ================================================

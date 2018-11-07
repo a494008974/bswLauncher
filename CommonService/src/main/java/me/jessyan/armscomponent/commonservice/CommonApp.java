@@ -4,8 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.jess.arms.base.BaseApplication;
 
-import me.jessyan.armscomponent.commonservice.launcher.bean.DaoMaster;
-import me.jessyan.armscomponent.commonservice.launcher.bean.DaoSession;
+import me.jessyan.armscomponent.commonservice.dao.DaoMaster;
+import me.jessyan.armscomponent.commonservice.dao.DaoSession;
 
 
 /**

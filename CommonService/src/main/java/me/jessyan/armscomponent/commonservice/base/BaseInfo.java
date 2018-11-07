@@ -1,4 +1,4 @@
-package me.jessyan.armscomponent.commonservice;
+package me.jessyan.armscomponent.commonservice.base;
 
 import android.content.Intent;
 

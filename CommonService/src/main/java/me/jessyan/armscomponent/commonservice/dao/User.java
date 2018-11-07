@@ -1,21 +1,19 @@
-package me.jessyan.armscomponent.commonservice.zhou.bean;
+package me.jessyan.armscomponent.commonservice.dao;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
- * Created by zhou on 2018/11/5.
+ * Created by zhou on 2018/11/7.
  */
 @Entity
 public class User {
     private String username;
     private String password;
-    private String email;
-    @Generated(hash = 1172673984)
-    public User(String username, String password, String email) {
+    @Generated(hash = 2090636610)
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
     }
     @Generated(hash = 586692638)
     public User() {
@@ -31,11 +29,5 @@ public class User {
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-    public String getEmail() {
-        return this.email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
