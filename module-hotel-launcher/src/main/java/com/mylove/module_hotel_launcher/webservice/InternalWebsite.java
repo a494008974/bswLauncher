@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.jessyan.armscomponent.commonres.service;
+package com.mylove.module_hotel_launcher.webservice;
 
-import com.yanzhenjie.andserver.annotation.Controller;
-import com.yanzhenjie.andserver.annotation.GetMapping;
+import com.yanzhenjie.andserver.annotation.Website;
+import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
 
 /**
- * Created by YanZhenjie on 2018/9/12.
+ * Created by YanZhenjie on 2018/9/17.
  */
-@Controller
-public class PageController {
+@Website
+public class InternalWebsite extends AssetsWebsite {
 
-    @GetMapping(path = "/")
-    public String index() {
-        // Equivalent to [return "/index"].
-        return "forward:/index.html";
+    public InternalWebsite() {
+        super("/web");
     }
 }
