@@ -1,6 +1,5 @@
 package com.mylove.module_hotel_launcher;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,7 +9,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 
-import me.jessyan.armscomponent.commonres.service.WebService;
+import me.jessyan.armscomponent.commonres.service.CoreService;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
 
 /**
@@ -32,7 +31,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
         Intent intent = new Intent();
-        intent.setClass(this, WebService.class);
+        intent.setClass(this,CoreService.class);
         startService(intent);
     }
 
@@ -40,7 +39,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         Intent intent = new Intent();
-        intent.setClass(this, WebService.class);
+        intent.setClass(this,CoreService.class);
         stopService(intent);
     }
 }

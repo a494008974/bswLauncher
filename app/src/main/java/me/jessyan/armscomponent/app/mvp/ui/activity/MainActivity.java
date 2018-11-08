@@ -16,6 +16,7 @@
 package me.jessyan.armscomponent.app.mvp.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -139,6 +140,8 @@ public class MainActivity extends BaseActivity {
         };
         mAdapter.setDatas(baseInfos);
         tvRecyclerView.setAdapter(mAdapter);
+
+
     }
 
     private void setListener() {

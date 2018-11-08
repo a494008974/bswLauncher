@@ -1,4 +1,4 @@
-include ':app',
+include ':app', ':module-zhou',
         ':module-launcher',
         ':module-hotel-launcher',
         ':CommonSDK',

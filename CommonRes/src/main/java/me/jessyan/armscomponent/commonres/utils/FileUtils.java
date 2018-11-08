@@ -2,6 +2,9 @@ package me.jessyan.armscomponent.commonres.utils;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.os.Environment;
+import android.webkit.MimeTypeMap;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +12,7 @@ import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 /**
  * Desc:文件和文件夹操作类
@@ -16,6 +20,22 @@ import java.security.NoSuchAlgorithmException;
  */
 
 public final class FileUtils {
+
+
+
+    /**
+     * SD is available.
+     *
+     * @return true, otherwise is false.
+     */
+    public static boolean storageAvailable() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File sd = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+            return sd.canWrite();
+        } else {
+            return false;
+        }
+    }
 
     private FileUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
