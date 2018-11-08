@@ -43,11 +43,8 @@ import me.jessyan.armscomponent.commonsdk.core.RouterHub;
 import me.jessyan.armscomponent.commonsdk.utils.Utils;
 import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 import me.jessyan.armscomponent.commonservice.gank.service.GankInfoService;
-import me.jessyan.armscomponent.commonservice.gold.service.GoldInfoService;
 import me.jessyan.armscomponent.commonservice.hotel.service.HotelInfoService;
 import me.jessyan.armscomponent.commonservice.launcher.service.LauncherInfoService;
-import me.jessyan.armscomponent.commonservice.zhihu.service.ZhihuInfoService;
-import me.jessyan.armscomponent.commonservice.zhou.service.ZhouInfoService;
 
 /**
  * ================================================
@@ -65,16 +62,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_recycle_view)
     TvRecyclerView tvRecyclerView;
 
-    @Autowired(name = RouterHub.ZHIHU_SERVICE_ZHIHUINFOSERVICE)
-    ZhihuInfoService mZhihuInfoService;
+
     @Autowired(name = RouterHub.GANK_SERVICE_GANKINFOSERVICE)
     GankInfoService mGankInfoService;
-    @Autowired(name = RouterHub.GOLD_SERVICE_GOLDINFOSERVICE)
-    GoldInfoService mGoldInfoService;
+
     @Autowired(name = RouterHub.LAUNCHER_SERVICE_LAUNCHERINFOSERVICE)
     LauncherInfoService mLauncherInfoService;
-    @Autowired(name = RouterHub.ZHOU_SERVICE_ZHOUINFOSERVICE)
-    ZhouInfoService mZhouInfoService;
+
     @Autowired(name = RouterHub.HOTEL_SERVICE_HOTELINFOSERVICE)
     HotelInfoService mHotelInfoService;
 
@@ -112,21 +106,15 @@ public class MainActivity extends BaseActivity {
         if (mHotelInfoService != null) {
             baseInfos.add(mHotelInfoService.getInfo());
         }
-        if (mZhouInfoService != null) {
-            baseInfos.add(mZhouInfoService.getInfo());
-        }
+
         if (mLauncherInfoService != null) {
             baseInfos.add(mLauncherInfoService.getInfo());
         }
-        if (mZhihuInfoService != null) {
-            baseInfos.add(mZhihuInfoService.getInfo());
-        }
+
         if (mGankInfoService != null) {
             baseInfos.add(mGankInfoService.getInfo());
         }
-        if (mGoldInfoService != null) {
-            baseInfos.add(mGoldInfoService.getInfo());
-        }
+
     }
 
     @Override
