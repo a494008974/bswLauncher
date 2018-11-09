@@ -27,5 +27,7 @@ dependencies {
     compileOnly rootProject.ext.dependencies["appcompat-v7"]
     compileOnly 'me.jessyan:arms:2.4.1'
     compileOnly rootProject.ext.dependencies["greendao"]
+    implementation rootProject.ext.dependencies["andserverApi"]
+    annotationProcessor rootProject.ext.dependencies["andserverProcessor"]
     api project(":CommonSDK")
 }

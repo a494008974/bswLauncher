@@ -1,9 +1,16 @@
 package me.jessyan.armscomponent.commonservice;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 
 import com.jess.arms.base.BaseApplication;
+import com.yanzhenjie.andserver.util.IOUtils;
 
+import java.io.File;
+
+import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
 import me.jessyan.armscomponent.commonservice.dao.DaoMaster;
 import me.jessyan.armscomponent.commonservice.dao.DaoSession;
 
@@ -18,17 +25,20 @@ public class CommonApp extends BaseApplication {
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
 
-    private static CommonApp instance;
-
+    private static CommonApp mInstance;
+    private File mRootDir;
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
+        if (mInstance == null) {
+            mInstance = this;
+            initRootPath(this);
+        }
         setDatabase();
     }
 
     public static CommonApp getInstance(){
-        return instance;
+        return mInstance;
     }
 
     /**
@@ -51,5 +61,22 @@ public class CommonApp extends BaseApplication {
     }
     public SQLiteDatabase getDb() {
         return db;
+    }
+
+    @NonNull
+    public File getRootDir() {
+        return mRootDir;
+    }
+
+    private void initRootPath(Context context) {
+        if (mRootDir != null) return;
+
+        if (FileUtils.storageAvailable()) {
+            mRootDir = Environment.getExternalStorageDirectory();
+        } else {
+            mRootDir = context.getFilesDir();
+        }
+        mRootDir = new File(mRootDir, "AndServer");
+        IOUtils.createFolder(mRootDir);
     }
 }

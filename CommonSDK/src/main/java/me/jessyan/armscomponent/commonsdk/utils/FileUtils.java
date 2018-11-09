@@ -1,10 +1,9 @@
-package me.jessyan.armscomponent.commonres.utils;
+package me.jessyan.armscomponent.commonsdk.utils;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Environment;
 import android.webkit.MimeTypeMap;
-
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +34,17 @@ public final class FileUtils {
         } else {
             return false;
         }
+    }
+    public static boolean isEmpty(Object str) {
+        return (str == null || "".equals(str));
+    }
+    public static File createRandomFile(File rootDir,String mimeType,String fileName) {
+        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+        if (isEmpty(extension)) {
+            extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
+        }
+        String uuid = UUID.randomUUID().toString();
+        return new File(rootDir, uuid + "." + extension);
     }
 
     private FileUtils() {

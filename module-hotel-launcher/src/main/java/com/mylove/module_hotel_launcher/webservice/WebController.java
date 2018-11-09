@@ -23,50 +23,40 @@ import com.yanzhenjie.andserver.annotation.RequestParam;
 import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
-import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.multipart.MultipartFile;
-import com.yanzhenjie.andserver.http.session.Session;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.StatusCode;
 
+import java.io.File;
 import java.io.IOException;
+
+import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
+import me.jessyan.armscomponent.commonservice.CommonApp;
 
 @Controller
 public class WebController {
 
     @GetMapping(path = "/")
     public String index() {
-        // Equivalent to [return "/index"].
         return "forward:/index.html";
     }
 
     @GetMapping(path = "/show")
     public String show() {
-        // Equivalent to [return "/index"].
         return "forward:/show.html";
     }
 
-    @PostMapping(path = "/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String upload(@RequestParam(name = "header") MultipartFile file) throws IOException {
-//        File localFile = FileUtils.createRandomFile(file);
-//        file.transferTo(localFile);
-//        return localFile.getAbsolutePath();
-        return null;
-    }
+    @PostMapping(path = "/upload")
+    String upload(HttpResponse response,@RequestParam(name = "file") MultipartFile file) throws IOException {
 
-    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml"})
-    String consume() {
-        return "Consume is successful";
-    }
+        File localFile = FileUtils.createRandomFile(CommonApp.getInstance().getRootDir(),
+                file.getContentType().toString(),
+                file.getFilename());
 
-    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8"})
-    String produce() {
-        return "Produce is successful";
-    }
-
-    @GetMapping(path = "/user/{username}")
-    String user(@PathVariable("username") String username) {
-        return "username : "+username;
+        file.transferTo(localFile);
+//        response.setStatus(StatusCode.SC_OK);
+//        response.setBody(new StringBody("upload => success !"));
+        return "forward:/index.html";
     }
 
     @GetMapping(path = "/login/{account}/{password}")
