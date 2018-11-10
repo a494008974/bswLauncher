@@ -1,31 +1,76 @@
 <html>
     <head>
-        <title>桌面控制</title>
+        <title>index</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+            body{
+                margin-top:60px;
+            }
+            #app table {
+                background-color:#bbe0e6;
+            }
+            td,th {
+                text-align:center;
+                padding: 10px;
+            }
+            .center {
+                margin-left:auto;
+                margin-right:auto;
+                width:70%;
+                border:3px;
+            }
+        </style>
     </head>
-    <body style="text-align:center;">
-
-        <div>
-            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa
-        </div>
-        <form action="upload" method="post" enctype="multipart/form-data">
-            <input type="text" name="resId" value="101" hidden/>
-
-            <input type="file" name="file" />
-            <br />
-            <input type="submit" name="submit" value="Submit" />
-        </form>
-        <div>
-            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa
+    <body>
+        <div id="app" v-cloak>
+            <table class="center" border="3">
+                <tr align="center" >
+                    <th>ID</th>
+                    <th>URL</th>
+                    <th>PATH</th>
+                    <th>PKG</th>
+                    <th>ACTION</th>
+                    <th>ISACT</th>
+                    <th>CREATETIME</th>
+                    <th>ISNET</th>
+                </tr>
+                <tr v-for="item in hotels" >
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.url }}</td>
+                    <td>{{ item.path }}</td>
+                    <td>{{ item.pkg }}</td>
+                    <td>{{ item.action }}</td>
+                    <td>{{ item.isAct }}</td>
+                    <td>{{ item.createTime }}</td>
+                    <td>{{ item.isNet }}</td>
+                </tr>
+            </table>
         </div>
 
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/vue.js"></script>
+        <script src="js/vue-resource.min.js"></script>
         <script>
-            $("button").click(function(e){
-               $.get("action?style="+e.target.name+"&fragment="+e.target.value,function(data,status){});
-            });
+            new Vue({
+              el: '#app',
+              data: {
+                hotels: ''
+              },
+              created: function () {
+                this.$http.get('/hotels').then(response => {
+                    this.$data.hotels = response.body;
+                  }, response => {
+                  });
+              },
+              method:{
+
+              }
+            })
         </script>
     </body>
 </html>

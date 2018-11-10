@@ -98,7 +98,7 @@ dependencies {
         compileOnly rootProject.ext.dependencies["canary-release"]
         compileOnly rootProject.ext.dependencies["junit"]
     }
-
+    implementation rootProject.ext.dependencies["zxing"]
     implementation rootProject.ext.dependencies["andserverApi"]
     annotationProcessor rootProject.ext.dependencies["andserverProcessor"]
 

@@ -110,8 +110,12 @@ ext {
             //greendao
             "greendao"                  :"org.greenrobot:greendao:3.2.2",
 
+            //andserver
             "andserverApi"               : 'com.yanzhenjie.andserver:api:2.0.1',
             "andserverProcessor"        : 'com.yanzhenjie.andserver:processor:2.0.1',
+
+            //zxing
+            "zxing"               : 'com.google.zxing:core:3.3.0',
     ]
 
 

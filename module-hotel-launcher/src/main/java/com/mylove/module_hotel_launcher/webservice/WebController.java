@@ -15,23 +15,36 @@
  */
 package com.mylove.module_hotel_launcher.webservice;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.yanzhenjie.andserver.annotation.Controller;
 import com.yanzhenjie.andserver.annotation.GetMapping;
 import com.yanzhenjie.andserver.annotation.PathVariable;
 import com.yanzhenjie.andserver.annotation.PostMapping;
 import com.yanzhenjie.andserver.annotation.RequestParam;
+import com.yanzhenjie.andserver.framework.body.FileBody;
+import com.yanzhenjie.andserver.framework.body.JsonBody;
+import com.yanzhenjie.andserver.framework.body.StreamBody;
 import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.multipart.MultipartFile;
-import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.StatusCode;
 
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
 import me.jessyan.armscomponent.commonservice.CommonApp;
+import me.jessyan.armscomponent.commonservice.dao.DaoHelper;
+import me.jessyan.armscomponent.commonservice.dao.HotelEntity;
 
 @Controller
 public class WebController {
@@ -39,11 +52,6 @@ public class WebController {
     @GetMapping(path = "/")
     public String index() {
         return "forward:/index.html";
-    }
-
-    @GetMapping(path = "/show")
-    public String show() {
-        return "forward:/show.html";
     }
 
     @PostMapping(path = "/upload")
@@ -54,9 +62,33 @@ public class WebController {
                 file.getFilename());
 
         file.transferTo(localFile);
-//        response.setStatus(StatusCode.SC_OK);
-//        response.setBody(new StringBody("upload => success !"));
         return "forward:/index.html";
+    }
+
+    @GetMapping(path = "/fetch/{filename}")
+    void fetch(HttpRequest request, HttpResponse response, @PathVariable(name = "filename") String filename) {
+        File file = new File(CommonApp.getInstance().getRootDir(),filename);
+        if(FileUtils.isFileExists(file)){
+            response.setStatus(StatusCode.SC_PARTIAL_CONTENT);
+            response.setBody(new FileBody(file));
+        }else{
+            response.setStatus(StatusCode.SC_MOVED_PERMANENTLY);
+            response.setBody(new StringBody("资源不存在!"));
+        }
+    }
+
+    @GetMapping(path = "/delete/{filename}")
+    void del(HttpRequest request, HttpResponse response, @PathVariable(name = "filename") String filename) {
+        File file = new File(CommonApp.getInstance().getRootDir(),filename);
+        if(FileUtils.isFileExists(file)){
+            FileUtils.deleteFile(file);
+            response.setStatus(StatusCode.SC_OK);
+            response.setBody(new StringBody("删除成功!"));
+        }else{
+            response.setStatus(StatusCode.SC_MOVED_PERMANENTLY);
+            response.setBody(new StringBody("资源不存在!"));
+        }
+
     }
 
     @GetMapping(path = "/login/{account}/{password}")
@@ -65,4 +97,21 @@ public class WebController {
         response.setStatus(StatusCode.SC_OK);
         response.setBody(new StringBody("zhou login => account = "+account+" password = "+password ));
     }
+
+    @GetMapping(path = "/hotels")
+    void banners(HttpRequest request, HttpResponse response) {
+        try{
+            List<HotelEntity> hotelEntities = DaoHelper.fetchHotelEntity();
+            if (hotelEntities != null){
+                Gson gson = new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create();
+                String con = gson.toJson(hotelEntities);
+                response.setStatus(StatusCode.SC_OK);
+                response.setBody(new JsonBody(con));
+            }
+        }catch (Exception e){
+        }
+    }
+
 }

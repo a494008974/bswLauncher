@@ -4,9 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
+
+import org.simple.eventbus.EventBus;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -15,6 +18,8 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import me.jessyan.armscomponent.commonsdk.core.EventBusHub;
+
 
 /**
  * Created by Yan Zhenjie on 2018/6/9.
@@ -22,8 +27,9 @@ import java.util.regex.Pattern;
 public class CoreService extends Service {
 
     private Server mServer;
+    private static final String TAG = "CoreService";
 
-    private static final int PORT = 9090;
+    public static final int PORT = 9090;
 
 
     @Override
@@ -32,6 +38,24 @@ public class CoreService extends Service {
                 .inetAddress(getLocalIPAddress())
                 .port(PORT)
                 .timeout(10, TimeUnit.SECONDS)
+                .listener(new Server.ServerListener() {
+                    @Override
+                    public void onStarted() {
+                        String hostAddress = mServer.getInetAddress().getHostAddress();
+                        Log.e(TAG,"AndServer onStarted ip = "+hostAddress);
+                        EventBus.getDefault().post(hostAddress,"serverStart");
+                    }
+
+                    @Override
+                    public void onStopped() {
+                        Log.e(TAG,"AndServer onStopped");
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        Log.e(TAG,"AndServer onException");
+                    }
+                })
                 .build();
     }
 

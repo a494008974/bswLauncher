@@ -8,6 +8,8 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +37,7 @@ public final class FileUtils {
             return false;
         }
     }
+
     public static boolean isEmpty(Object str) {
         return (str == null || "".equals(str));
     }
@@ -43,9 +46,20 @@ public final class FileUtils {
         if (isEmpty(extension)) {
             extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
         }
-        String uuid = UUID.randomUUID().toString();
-        return new File(rootDir, uuid + "." + extension);
+        String uuid = String.format("%s.%s",UUID.randomUUID().toString(),extension);
+        try {
+            uuid = URLEncoder.encode(fileName,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new File(rootDir, uuid);
     }
+
+    public static String getMimeType(String filePath) {
+        String ext = MimeTypeMap.getFileExtensionFromUrl(filePath);
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
+    }
+
 
     private FileUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");

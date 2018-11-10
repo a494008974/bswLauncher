@@ -35,7 +35,6 @@ public class AppExceptionResolver implements ExceptionResolver {
     private static final String TAG = "AppExceptionResolver";
     @Override
     public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
-        Log.e(TAG,"AppExceptionResolver ==> onResolve ... ");
         if (e instanceof BasicException) {
             BasicException exception = (BasicException)e;
             response.setStatus(exception.getStatusCode());

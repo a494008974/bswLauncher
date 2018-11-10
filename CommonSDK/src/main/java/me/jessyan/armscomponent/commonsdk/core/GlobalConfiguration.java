@@ -57,7 +57,7 @@ public class GlobalConfiguration implements ConfigModule {
     public void applyOptions(Context context, GlobalConfigModule.Builder builder) {
         if (!BuildConfig.LOG_DEBUG) //Release 时,让框架不再打印 Http 请求和响应的信息
             builder.printHttpLogLevel(RequestInterceptor.Level.NONE);
-        builder.baseurl(Api.APP_DOMAIN)
+            builder.baseurl(Api.APP_DOMAIN)
                 .imageLoaderStrategy(new CommonGlideImageLoaderStrategy())
                 .globalHttpHandler(new GlobalHttpHandlerImpl(context))
                 .responseErrorListener(new ResponseErrorListenerImpl())

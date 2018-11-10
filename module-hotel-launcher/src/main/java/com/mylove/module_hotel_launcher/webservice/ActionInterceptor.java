@@ -32,11 +32,9 @@ public class ActionInterceptor implements HandlerInterceptor {
     @Override
     public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response,
                                @NonNull RequestHandler handler) {
-        Log.e(TAG,"ActionInterceptor ==> onIntercept ... ");
         if (handler instanceof MethodHandler) {
             MethodHandler methodHandler = (MethodHandler)handler;
             Addition addition = methodHandler.getAddition();
-
         }
         return false;
     }
