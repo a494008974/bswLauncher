@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".mvp.ui.activity.HomeActivity" />
+        <activity android:name=".mvp.ui.activity.ZhouActivity"></activity>
     </application>
 
 </manifest>

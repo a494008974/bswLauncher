@@ -26,18 +26,13 @@ import com.yanzhenjie.andserver.annotation.PostMapping;
 import com.yanzhenjie.andserver.annotation.RequestParam;
 import com.yanzhenjie.andserver.framework.body.FileBody;
 import com.yanzhenjie.andserver.framework.body.JsonBody;
-import com.yanzhenjie.andserver.framework.body.StreamBody;
 import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.multipart.MultipartFile;
 import com.yanzhenjie.andserver.util.StatusCode;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -48,21 +43,24 @@ import me.jessyan.armscomponent.commonservice.dao.HotelEntity;
 
 @Controller
 public class WebController {
-
+    private static final String TAG = "WebController";
     @GetMapping(path = "/")
     public String index() {
         return "forward:/index.html";
     }
 
-    @PostMapping(path = "/upload")
-    String upload(HttpResponse response,@RequestParam(name = "file") MultipartFile file) throws IOException {
+    @GetMapping(path = "/fileupload")
+    public String fileupload() {
+        return "forward:/fileupload.html";
+    }
 
+    @PostMapping(path = "/upload")
+    void upload(HttpResponse response,@RequestParam(name = "file") MultipartFile file) throws IOException {
         File localFile = FileUtils.createRandomFile(CommonApp.getInstance().getRootDir(),
                 file.getContentType().toString(),
                 file.getFilename());
-
+        Log.e(TAG,localFile.getPath());
         file.transferTo(localFile);
-        return "forward:/index.html";
     }
 
     @GetMapping(path = "/fetch/{filename}")

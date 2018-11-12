@@ -3,31 +3,11 @@
         <title>index</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <style>
-            [v-cloak] {
-                display: none;
-            }
-            body{
-                margin-top:60px;
-            }
-            #app table {
-                background-color:#bbe0e6;
-            }
-            td,th {
-                text-align:center;
-                padding: 10px;
-            }
-            .center {
-                margin-left:auto;
-                margin-right:auto;
-                width:70%;
-                border:3px;
-            }
-        </style>
+        <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
         <div id="app" v-cloak>
-            <table class="center" border="3">
+            <table class="center table table-bordered" border="3">
                 <tr align="center" >
                     <th>ID</th>
                     <th>URL</th>
@@ -51,26 +31,22 @@
             </table>
         </div>
 
+        <form action="upload" method="post" enctype="multipart/form-data" class="center">
+            <a class="opts_btn" href="JavaScript:void(0)">
+                <label id="opst_txt_a">选择上传文件</label>
+                <input type="file" class="oFile" name="UploadForm[image]" onchange="FileChangeFn(event)">
+            </a>
+            <label id="file_size"></label><br><br>
+            <div class="speed_box">
+                <div id="speed">0%</div>
+            </div>
+            <button type="button" class="send_btn" onclick="UploadFileFn()">开始上传文件</button>
+        </form>
+
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/vue.js"></script>
         <script src="js/vue-resource.min.js"></script>
-        <script>
-            new Vue({
-              el: '#app',
-              data: {
-                hotels: ''
-              },
-              created: function () {
-                this.$http.get('/hotels').then(response => {
-                    this.$data.hotels = response.body;
-                  }, response => {
-                  });
-              },
-              method:{
-
-              }
-            })
-        </script>
+        <script src="js/main.js"></script>
     </body>
 </html>
