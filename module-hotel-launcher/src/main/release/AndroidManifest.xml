@@ -9,15 +9,7 @@
             android:name="com.mylove.module_hotel_launcher.app.GlobalConfiguration"
             android:value="ConfigModule" />
 
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".mvp.ui.activity.HomeActivity" />
-        <activity android:name=".mvp.ui.activity.ZhouActivity"></activity>
     </application>
 
 </manifest>

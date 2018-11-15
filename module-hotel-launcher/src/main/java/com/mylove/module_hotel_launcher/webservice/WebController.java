@@ -34,11 +34,13 @@ import com.yanzhenjie.andserver.util.StatusCode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
 import me.jessyan.armscomponent.commonservice.CommonApp;
 import me.jessyan.armscomponent.commonservice.dao.DaoHelper;
+import me.jessyan.armscomponent.commonservice.dao.FileEntity;
 import me.jessyan.armscomponent.commonservice.dao.HotelEntity;
 
 @Controller
@@ -53,6 +55,12 @@ public class WebController {
     public String fileupload() {
         return "forward:/fileupload.html";
     }
+
+    @GetMapping(path = "/file/list")
+    public String fileList() {
+        return "forward:/filelist.html";
+    }
+
 
     @PostMapping(path = "/upload")
     void upload(HttpResponse response,@RequestParam(name = "file") MultipartFile file) throws IOException {
@@ -76,17 +84,12 @@ public class WebController {
     }
 
     @GetMapping(path = "/delete/{filename}")
-    void del(HttpRequest request, HttpResponse response, @PathVariable(name = "filename") String filename) {
+    String del(HttpRequest request, HttpResponse response, @PathVariable(name = "filename") String filename) {
         File file = new File(CommonApp.getInstance().getRootDir(),filename);
         if(FileUtils.isFileExists(file)){
             FileUtils.deleteFile(file);
-            response.setStatus(StatusCode.SC_OK);
-            response.setBody(new StringBody("删除成功!"));
-        }else{
-            response.setStatus(StatusCode.SC_MOVED_PERMANENTLY);
-            response.setBody(new StringBody("资源不存在!"));
         }
-
+        return "forward:/filelist.html";
     }
 
     @GetMapping(path = "/login/{account}/{password}")
@@ -96,8 +99,38 @@ public class WebController {
         response.setBody(new StringBody("zhou login => account = "+account+" password = "+password ));
     }
 
+
+    @GetMapping(path = "/file/data")
+    void fileDatas(HttpRequest request, HttpResponse response) {
+        File file = CommonApp.getInstance().getRootDir();
+        if(FileUtils.isDir(file)){
+            List<FileEntity> fileEntities = new ArrayList<FileEntity>();
+            File[] files = file.listFiles();
+            for (File tmp : files) {
+                FileEntity fileEntity = new FileEntity();
+                fileEntity.setFilename(tmp.getName());
+                fileEntity.setFilepath(tmp.getPath());
+                fileEntity.setFilesize(String.valueOf(tmp.length()));
+                fileEntities.add(fileEntity);
+            }
+            try{
+                if (fileEntities != null){
+                    Gson gson = new GsonBuilder()
+                            .excludeFieldsWithoutExposeAnnotation()
+                            .create();
+                    String con = gson.toJson(fileEntities);
+                    response.setStatus(StatusCode.SC_OK);
+                    response.setBody(new JsonBody(con));
+                }
+            }catch (Exception e){
+            }
+        }
+
+
+    }
+
     @GetMapping(path = "/hotels")
-    void banners(HttpRequest request, HttpResponse response) {
+    void hotels(HttpRequest request, HttpResponse response) {
         try{
             List<HotelEntity> hotelEntities = DaoHelper.fetchHotelEntity();
             if (hotelEntities != null){

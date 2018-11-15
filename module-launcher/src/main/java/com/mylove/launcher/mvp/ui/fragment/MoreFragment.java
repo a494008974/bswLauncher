@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,6 +153,7 @@ public class MoreFragment extends DialogFragment {
                     }
                 }else if(MoreFragment.MORE_FRAGMENT.equals(type)){
                     PackageInfo info = (PackageInfo)mAdapter.getItem(position);
+                    Log.e("MoreFragment",info.applicationInfo.packageName);
                     SystemUtils.openApk(getActivity(),info.applicationInfo.packageName);
                 }
             }
