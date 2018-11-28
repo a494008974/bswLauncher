@@ -46,6 +46,7 @@ import me.jessyan.armscomponent.commonservice.base.BaseInfo;
 import me.jessyan.armscomponent.commonservice.gank.service.GankInfoService;
 import me.jessyan.armscomponent.commonservice.hotel.service.HotelInfoService;
 import me.jessyan.armscomponent.commonservice.launcher.service.LauncherInfoService;
+import me.jessyan.armscomponent.commonservice.tvlauncher.service.TVLauncherInfoService;
 
 /**
  * ================================================
@@ -70,8 +71,13 @@ public class MainActivity extends BaseActivity {
     @Autowired(name = RouterHub.LAUNCHER_SERVICE_LAUNCHERINFOSERVICE)
     LauncherInfoService mLauncherInfoService;
 
+    @Autowired(name = RouterHub.TVLAUNCHER_SERVICE_LAUNCHERINFOSERVICE)
+    TVLauncherInfoService mTVLauncherInfoService;
+
     @Autowired(name = RouterHub.HOTEL_SERVICE_HOTELINFOSERVICE)
     HotelInfoService mHotelInfoService;
+
+
 
     private long mPressedTime;
 
@@ -110,6 +116,10 @@ public class MainActivity extends BaseActivity {
 
         if (mLauncherInfoService != null) {
             baseInfos.add(mLauncherInfoService.getInfo());
+        }
+
+        if (mTVLauncherInfoService != null) {
+            baseInfos.add(mTVLauncherInfoService.getInfo());
         }
 
         if (mGankInfoService != null) {

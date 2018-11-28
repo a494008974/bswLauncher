@@ -43,12 +43,12 @@ public interface RouterHub {
      * 组名
      */
     String APP = "/app";//宿主 App 组件
-    String ZHIHU = "/zhihu";//知乎组件
     String GANK = "/gank";//干货集中营组件
-    String GOLD = "/gold";//稀土掘金组件
     String LAUNCHER = "/launcher"; //桌面
     String ZHOU = "/zhou";  //测试
     String HOTEL = "/hotel"; //酒店
+
+    String TVLAUNCHER = "/tvlauncher"; //TV桌面
 
     /**
      * 服务组件, 用于给每个组件暴露特有的服务
@@ -63,30 +63,25 @@ public interface RouterHub {
 
 
     /**
-     * 知乎分组
-     */
-    String ZHIHU_SERVICE_ZHIHUINFOSERVICE = ZHIHU + SERVICE + "/ZhihuInfoService";
-    String ZHIHU_HOMEACTIVITY = ZHIHU + "/HomeActivity";
-    String ZHIHU_DETAILACTIVITY = ZHIHU + "/DetailActivity";
-
-    /**
      * 干货集中营分组
      */
     String GANK_SERVICE_GANKINFOSERVICE = GANK + SERVICE + "/GankInfoService";
     String GANK_HOMEACTIVITY = GANK + "/HomeActivity";
 
-    /**
-     * 稀土掘金分组
-     */
-    String GOLD_SERVICE_GOLDINFOSERVICE = GOLD + SERVICE + "/GoldInfoService";
-    String GOLD_HOMEACTIVITY = GOLD + "/HomeActivity";
-    String GOLD_DETAILACTIVITY = GOLD + "/DetailActivity";
 
     /**
      * 测试分组
      */
     String ZHOU_SERVICE_ZHOUINFOSERVICE = ZHOU + SERVICE + "/ZhouInfoService";
     String ZHOU_HOMEACTIVITY = ZHOU + "/HomeActivity";
+
+    /**
+     * TV桌面分组
+     */
+    String TVLAUNCHER_SERVICE_LAUNCHERINFOSERVICE = TVLAUNCHER + SERVICE + "/TVLauncherInfoService";
+
+    String TVLAUNCHER_HOMEACTIVITY = TVLAUNCHER + "/HomeActivity";
+    String TVLAUNCHER_MOREACTIVITY = TVLAUNCHER + "/MoreActivity";
 
     /**
      * 桌面分组
