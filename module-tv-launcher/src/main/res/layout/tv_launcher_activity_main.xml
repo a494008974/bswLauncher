@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/launcher_background"
+    tools:context="com.mylove.launcher.com.mylove.tvlauncher.HomeActivity">
+
+    <include
+        layout="@layout/tv_launcher_home_header"
+        android:layout_width="match_parent"
+        android:layout_marginRight="150dp"
+        android:layout_marginLeft="150dp"
+        android:layout_height="110dp">
+    </include>
+
+    <include
+        layout="@layout/tv_launcher_home_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></include>
+
+    <com.owen.tvrecyclerview.widget.TvRecyclerView
+        android:id="@+id/tv_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="115dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginRight="150dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="510dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        app:tv_isMenu="true"
+        app:tv_layoutManager="ListLayoutManager">
+    </com.owen.tvrecyclerview.widget.TvRecyclerView>
+
+    <TextView
+        android:id="@+id/launcher_focus_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/public_white"
+        android:layout_marginTop="635dp"
+        android:textSize="@dimen/public_font_32sp"/>
+
+</FrameLayout>

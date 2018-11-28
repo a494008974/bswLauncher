@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="launcher_full_screen_dialog">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/public_Activity_Animation</item>
+    </style>
+
+    <style name="launcher_full_screen_more" parent="launcher_full_screen_dialog">
+        <item name="android:windowBackground">@drawable/launcher_background</item>
+    </style>
+</resources>

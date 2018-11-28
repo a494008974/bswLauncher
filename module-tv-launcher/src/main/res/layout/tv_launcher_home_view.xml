@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:id="@+id/home_main">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include1"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/launcher_home_margin_top"
+        android:background="@drawable/launcher_101"
+        android:layout_width="224dp"
+        android:layout_height="380dp">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_gravity="center"
+            android:background="@drawable/launcher_icon_101"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_tv_center"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include2"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/launcher_home_margin_top"
+        android:layout_width="219dp"
+        android:layout_height="187dp"
+        android:layout_marginLeft="6dp"
+        android:background="@drawable/launcher_102"
+        android:layout_toRightOf="@+id/launcher_include1">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_gravity="center"
+            android:background="@drawable/launcher_icon_102"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_google_play"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include3"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="219dp"
+        android:layout_height="187dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/launcher_103"
+        android:layout_toRightOf="@+id/launcher_include1"
+        android:layout_below="@+id/launcher_include2">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_gravity="center"
+            android:background="@drawable/launcher_icon_103"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_youtube"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include4"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/launcher_home_margin_top"
+        android:background="@drawable/launcher_104"
+        android:layout_width="144dp"
+        android:layout_height="245dp"
+        android:layout_marginLeft="6dp"
+        android:layout_toRightOf="@+id/launcher_include2">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/launcher_icon_104"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_file_browser"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include5"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/launcher_home_margin_top"
+        android:background="@drawable/launcher_105"
+        android:layout_width="144dp"
+        android:layout_height="245dp"
+        android:layout_marginLeft="6dp"
+        android:layout_toRightOf="@+id/launcher_include4">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/launcher_icon_105"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_chrome"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include6"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="294dp"
+        android:layout_height="129dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/launcher_include2"
+        android:background="@drawable/launcher_106"
+        android:layout_below="@+id/launcher_include4">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/launcher_icon_106"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="140dp"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"
+            android:textSize="24sp"
+            android:text="@string/launcher_settings"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include7"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/launcher_home_margin_top"
+        android:layout_width="219dp"
+        android:layout_height="187dp"
+        android:layout_marginLeft="6dp"
+        android:background="@drawable/launcher_107"
+        android:layout_toRightOf="@+id/launcher_include5">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_gravity="center"
+            android:background="@drawable/launcher_mem_anim"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_memory_recycle"
+            />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/launcher_include8"
+        android:focusable="true"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="219dp"
+        android:layout_height="187dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/launcher_108"
+        android:layout_toRightOf="@+id/launcher_include5"
+        android:layout_below="@+id/launcher_include7">
+
+        <ImageView
+            android:layout_width="@dimen/launcher_home_icon_width"
+            android:layout_height="@dimen/launcher_home_icon_height"
+            android:layout_gravity="center"
+            android:background="@drawable/launcher_icon_108"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:singleLine="true"
+            android:text="@string/launcher_apps"
+            />
+    </FrameLayout>
+
+</RelativeLayout>
