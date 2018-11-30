@@ -13,6 +13,7 @@
         android:focusableInTouchMode="true"
         android:layout_marginTop="@dimen/launcher_home_margin_top"
         android:background="@drawable/launcher_101"
+        android:nextFocusRight="@+id/launcher_include2"
         android:layout_width="224dp"
         android:layout_height="380dp">
 
@@ -20,7 +21,8 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_gravity="center"
-            android:background="@drawable/launcher_icon_101"
+            android:visibility="gone"
+            android:src="@drawable/launcher_icon_101"
             />
 
         <TextView
@@ -32,6 +34,13 @@
             android:textSize="24sp"
             android:singleLine="true"
             android:text="@string/launcher_tv_center"
+            android:visibility="gone"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -51,7 +60,8 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_gravity="center"
-            android:background="@drawable/launcher_icon_102"
+            android:visibility="gone"
+            android:src="@drawable/launcher_icon_102"
             />
 
         <TextView
@@ -62,7 +72,15 @@
             android:gravity="center"
             android:textSize="24sp"
             android:singleLine="true"
+            android:visibility="gone"
             android:text="@string/launcher_google_play"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -82,8 +100,9 @@
         <ImageView
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
+            android:visibility="gone"
             android:layout_gravity="center"
-            android:background="@drawable/launcher_icon_103"
+            android:src="@drawable/launcher_icon_103"
             />
 
         <TextView
@@ -93,8 +112,15 @@
             android:layout_marginTop="60dp"
             android:gravity="center"
             android:textSize="24sp"
+            android:visibility="gone"
             android:singleLine="true"
             android:text="@string/launcher_youtube"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -114,8 +140,9 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_marginTop="50dp"
+            android:visibility="gone"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/launcher_icon_104"
+            android:src="@drawable/launcher_icon_104"
             />
 
         <TextView
@@ -125,7 +152,15 @@
             android:gravity="center"
             android:textSize="24sp"
             android:singleLine="true"
+            android:visibility="gone"
             android:text="@string/launcher_file_browser"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -145,8 +180,9 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_marginTop="50dp"
+            android:visibility="gone"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/launcher_icon_105"
+            android:src="@drawable/launcher_icon_105"
             />
 
         <TextView
@@ -157,6 +193,14 @@
             android:textSize="24sp"
             android:singleLine="true"
             android:text="@string/launcher_chrome"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -178,7 +222,8 @@
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_marginLeft="30dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/launcher_icon_106"
+            android:visibility="gone"
+            android:src="@drawable/launcher_icon_106"
             />
 
         <TextView
@@ -189,6 +234,14 @@
             android:singleLine="true"
             android:textSize="24sp"
             android:text="@string/launcher_settings"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -208,7 +261,8 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_gravity="center"
-            android:background="@drawable/launcher_mem_anim"
+            android:visibility="gone"
+            android:src="@drawable/launcher_mem_anim"
             />
 
         <TextView
@@ -219,7 +273,15 @@
             android:gravity="center"
             android:textSize="24sp"
             android:singleLine="true"
+            android:visibility="gone"
             android:text="@string/launcher_memory_recycle"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 
@@ -240,7 +302,8 @@
             android:layout_width="@dimen/launcher_home_icon_width"
             android:layout_height="@dimen/launcher_home_icon_height"
             android:layout_gravity="center"
-            android:background="@drawable/launcher_icon_108"
+            android:visibility="gone"
+            android:src="@drawable/launcher_icon_108"
             />
 
         <TextView
@@ -252,6 +315,14 @@
             android:textSize="24sp"
             android:singleLine="true"
             android:text="@string/launcher_apps"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
             />
     </FrameLayout>
 

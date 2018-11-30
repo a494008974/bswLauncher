@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/launcher_background"
-    tools:context="com.mylove.launcher.com.mylove.tvlauncher.HomeActivity">
+    tools:context="com.mylove.tvlauncher.mvp.ui.HomeActivity">
 
     <include
         layout="@layout/tv_launcher_home_header"
@@ -15,11 +15,6 @@
         android:layout_height="110dp">
     </include>
 
-    <include
-        layout="@layout/tv_launcher_home_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></include>
-
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/tv_recycler_view"
         android:layout_width="wrap_content"
@@ -28,7 +23,7 @@
         android:paddingBottom="10dp"
         android:layout_marginRight="150dp"
         android:layout_marginLeft="150dp"
-        android:layout_marginTop="510dp"
+        android:layout_marginTop="520dp"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
         app:tv_isMenu="true"
@@ -41,7 +36,21 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/public_white"
-        android:layout_marginTop="635dp"
+        android:layout_marginTop="640dp"
         android:textSize="@dimen/public_font_32sp"/>
 
+    <com.owen.tvrecyclerview.widget.TvRecyclerView
+        android:id="@+id/tv_recycler_home"
+        android:layout_marginTop="105dp"
+        android:paddingTop="10dp"
+        android:paddingRight="150dp"
+        android:paddingLeft="150dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:orientation="vertical"
+        app:tv_numColumns="19"
+        app:tv_numRows="8"
+        app:tv_layoutManager="SpannableGridLayoutManager">
+    </com.owen.tvrecyclerview.widget.TvRecyclerView>
 </FrameLayout>

@@ -90,7 +90,7 @@ public class MoreFragment extends DialogFragment {
                     .asColor()
                     .borderColor(getResources().getColor(R.color.public_white))
                     .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3)
-//                    .shadowColor(getResources().getColor(R.color.public_white))
+                    .shadowColor(getResources().getColor(R.color.public_white))
                     .animDuration(180L)
                     .build(viewGroup);
         }
@@ -131,6 +131,14 @@ public class MoreFragment extends DialogFragment {
         return view;
     }
 
+
+    public void refreshData(List<PackageInfo> packageInfos){
+        if(mAdapter != null && tvRecyclerView != null){
+            mAdapter.setDatas(packageInfos);
+            tvRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
     private void setListener() {
         tvRecyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
@@ -143,6 +151,7 @@ public class MoreFragment extends DialogFragment {
                 if(MoreFragment.CHECK_FRAGMENT.equals(type)){
                     if(checkListener != null){
                         checkListener.onItemClick(parent,itemView,position,mAdapter.getItem(position));
+                        dismiss();
                     }
                 }else if(MoreFragment.SELECT_FRAGMENT.equals(type)){
                     if(selectListener != null){

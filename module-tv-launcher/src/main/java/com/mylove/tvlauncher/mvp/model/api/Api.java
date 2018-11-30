@@ -10,5 +10,6 @@ package com.mylove.tvlauncher.mvp.model.api;
  * ================================================
  */
 public interface Api {
-
+    String HOME_DOMAIN_NAME = "on-best";
+    String HOME_DOMAIN = "http://mng.on-best.com";
 }

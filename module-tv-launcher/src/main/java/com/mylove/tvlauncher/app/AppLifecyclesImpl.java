@@ -5,11 +5,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.jess.arms.base.delegate.AppLifecycles;
+import com.jess.arms.di.module.ClientModule;
 import com.jess.arms.utils.ArmsUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import com.mylove.tvlauncher.BuildConfig;
+
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
+
+import static com.mylove.tvlauncher.mvp.model.api.Api.HOME_DOMAIN;
+import static com.mylove.tvlauncher.mvp.model.api.Api.HOME_DOMAIN_NAME;
 
 /**
  * ================================================
@@ -34,6 +40,8 @@ public class AppLifecyclesImpl implements AppLifecycles {
             // You should not init your app in this process.
             return;
         }
+        //使用 RetrofitUrlManager 切换 BaseUrl
+        RetrofitUrlManager.getInstance().putDomain(HOME_DOMAIN_NAME, HOME_DOMAIN);
         //当所有模块集成到宿主 App 时, 在 App 中已经执行了以下代码
         if (BuildConfig.IS_BUILD_MODULE) {
             //leakCanary内存泄露检查

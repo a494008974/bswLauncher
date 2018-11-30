@@ -2,7 +2,7 @@ package com.mylove.tvlauncher.di.component;
 
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
-import com.mylove.tvlauncher.HomeActivity;
+import com.mylove.tvlauncher.mvp.ui.HomeActivity;
 import com.mylove.tvlauncher.di.module.HomeModule;
 import com.mylove.tvlauncher.mvp.contract.HomeContract;
 

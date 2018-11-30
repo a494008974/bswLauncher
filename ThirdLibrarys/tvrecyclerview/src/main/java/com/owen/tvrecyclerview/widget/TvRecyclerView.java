@@ -42,7 +42,7 @@ import com.owen.tvrecyclerview.utils.Loger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class TvRecyclerView extends RecyclerView implements View.OnClickListener, View.OnFocusChangeListener{
+public class TvRecyclerView extends RecyclerView implements View.OnClickListener, View.OnFocusChangeListener,View.OnKeyListener{
     private static final int DEFAULT_LOAD_MORE_BEFOREHAND_COUNT = 4;
     private static final Class<?>[] LAYOUT_MANAGER_CONSTRUCTOR_SIGNATURE =
             new Class[]{Context.class, AttributeSet.class, int.class};
@@ -66,6 +66,9 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
     private int mSelectedPosition = 0;
     private boolean mHasFocusWithPrevious = false;
 
+
+
+    private OnItemKeyListener onItemKeyListener;
     private OnItemListener mOnItemListener;
     private OnInBorderKeyEventListener mOnInBorderKeyEventListener;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -987,6 +990,7 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
     public void onChildAttachedToWindow(View child) {
         if(child.isClickable() && !ViewCompat.hasOnClickListeners(child)) {
             child.setOnClickListener(this);
+            child.setOnKeyListener(this);
         }
         if(child.isFocusable() && null == child.getOnFocusChangeListener()) {
             child.setOnFocusChangeListener(this);
@@ -1009,7 +1013,11 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
             }
         }
     }
-    
+
+    public void setOnItemKeyListener(OnItemKeyListener onItemKeyListener) {
+        this.onItemKeyListener = onItemKeyListener;
+    }
+
     public void setOnItemListener(OnItemListener onItemListener) {
         mOnItemListener = onItemListener;
     }
@@ -1020,6 +1028,14 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         mOnLoadMoreListener = onLoadMoreListener;
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if(null != onItemKeyListener && this != v) {
+            return onItemKeyListener.onItemKey(v,keyCode,event,getChildAdapterPosition(v));
+        }
+        return false;
     }
 
     public interface OnLoadMoreListener {
@@ -1037,6 +1053,11 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
 
         void onItemClick(TvRecyclerView parent, View itemView, int position);
     }
+
+    public interface  OnItemKeyListener{
+        boolean onItemKey(View v, int keyCode, KeyEvent event,int position);
+    }
+
 
     @Override
     protected Parcelable onSaveInstanceState() {

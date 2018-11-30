@@ -7,7 +7,13 @@ import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.mvp.BaseModel;
 import com.jess.arms.utils.DataHelper;
 import com.mylove.tvlauncher.app.utils.AppUtils;
+import com.mylove.tvlauncher.app.utils.DesHelper;
 import com.mylove.tvlauncher.mvp.contract.HomeContract;
+import com.mylove.tvlauncher.mvp.model.api.service.HomeApi;
+import com.mylove.tvlauncher.mvp.model.entity.HomeResponse;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import me.jessyan.armscomponent.commonservice.dao.DaoHelper;
+import me.jessyan.armscomponent.commonservice.dao.InfoBean;
 
 
 /**
@@ -31,21 +41,29 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
         super(repositoryManager);
     }
 
-//    @Override
-//    public Observable<GankBaseResponse<List<GankItemBean>>> getGirlList(int num, int page) {
-//        return mRepositoryManager
-//                .obtainRetrofitService(GankService.class)
-//                .getGirlList(num, page);
-//    }
-    public String fetchHomeData(){
-        System.out.println("HomeModel fetchHomeData ---");
-        return "fetchHomeData from HomeModel ===";
+    public Observable<HomeResponse> fetchHomeData(){
+
+        JSONObject jm = new JSONObject();
+        try {
+            jm.put("model", "VA_3128");
+            jm.put("path", "DSMB1");
+            jm.put("tem_index","happy_video_index");
+            jm.put("serial", "0001");
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+        }
+        String data = DesHelper.encrypt(jm.toString(), "win81688");
+
+        return mRepositoryManager
+                 .obtainRetrofitService(HomeApi.class)
+                 .getDataList(data);
     }
 
     @Override
-    public void fetchDao(Context context) {
-
+    public List<InfoBean> fetchInfoBeans() {
+        return DaoHelper.fetchInfoBeans();
     }
+
 
     @Override
     public List<String> fetchHomeShortCut(Context context) {

@@ -8,23 +8,24 @@
     <uses-permission android:name="android.permission.REBOOT" />
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
-    <application >
+
+    <application>
 
         <!-- 在组件集成宿主时, 由于宿主已经声明了 CommonSDK 的公有 ConfigModule, 所以在这里只需要声明业务组件自己的 ConfigModule -->
         <meta-data
             android:name="com.mylove.tvlauncher.app.GlobalConfiguration"
             android:value="ConfigModule" />
 
-        <activity android:name="com.mylove.tvlauncher.HomeActivity" >
+        <activity android:name=".mvp.ui.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.mylove.tvlauncher.mvp.ui.MoreActivity"></activity>
     </application>
 
 </manifest>

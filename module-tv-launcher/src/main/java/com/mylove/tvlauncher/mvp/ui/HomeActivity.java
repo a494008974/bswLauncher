@@ -1,4 +1,4 @@
-package com.mylove.tvlauncher;
+package com.mylove.tvlauncher.mvp.ui;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -24,18 +24,21 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
+import com.jess.arms.http.imageloader.ImageLoader;
 import com.jess.arms.utils.ArmsUtils;
 import com.mylove.tvlauncher.R;
 import com.mylove.tvlauncher.R2;
+import com.mylove.tvlauncher.app.utils.AppUtils;
+import com.mylove.tvlauncher.app.utils.Contanst;
 import com.mylove.tvlauncher.app.utils.SystemUtils;
 import com.mylove.tvlauncher.app.utils.ToastUtils;
 
+import com.mylove.tvlauncher.app.utils.down.DownloadUtil;
 import com.mylove.tvlauncher.di.component.DaggerHomeComponent;
 import com.mylove.tvlauncher.focus.FocusBorder;
 import com.mylove.tvlauncher.mvp.contract.HomeContract;
@@ -43,35 +46,44 @@ import com.mylove.tvlauncher.mvp.presenter.HomePresenter;
 import com.mylove.tvlauncher.mvp.ui.adapter.CommonRecyclerViewAdapter;
 import com.mylove.tvlauncher.mvp.ui.adapter.CommonRecyclerViewHolder;
 import com.mylove.tvlauncher.mvp.ui.fragment.MoreFragment;
+import com.mylove.tvlauncher.mvp.ui.widget.GCircleProgress;
 import com.owen.tvrecyclerview.widget.SimpleOnItemListener;
+import com.owen.tvrecyclerview.widget.SpannableGridLayoutManager;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
+
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
+import me.jessyan.armscomponent.commonsdk.imgaEngine.config.CommonImageConfigImpl;
+import me.jessyan.armscomponent.commonservice.dao.InfoBean;
 
 @Route(path = RouterHub.TVLAUNCHER_HOMEACTIVITY)
 public class HomeActivity extends BaseActivity<HomePresenter> implements HomeContract.View,View.OnKeyListener{
 
+    @BindView(R2.id.tv_recycler_home)
+    TvRecyclerView mTvRecyclerHome;
     @BindView(R2.id.tv_recycler_view)
     TvRecyclerView mTvRecyclerView;
 
     List<String> shortcuts = new ArrayList<String>();
     private CommonRecyclerViewAdapter mAdapter;
 
+    List<InfoBean> infoBeans = new ArrayList<InfoBean>();
+    private CommonRecyclerViewAdapter homeAdapter;
+
     private long mPressedTime;
 
     private MoreFragment moreFragment;
     private List<PackageInfo> packageInfos;
 
-    @BindView(R2.id.home_main)
-    RelativeLayout mHomeMain;
-
     @BindView(R2.id.launcher_net)
     ImageView mLauncherNet;
-
     @BindView(R2.id.launcher_time)
     TextView mLauncherTime;
     @BindView(R2.id.launcher_statu)
@@ -92,8 +104,12 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
 
     private AnimationDrawable animationDrawable;
     private boolean dismiss;
+    private ImageLoader mImageLoader;
+
+    private String oldpkg;
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
+        mImageLoader = appComponent.imageLoader();
         DaggerHomeComponent
                 .builder()
                 .view(this)
@@ -107,14 +123,11 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         return R.layout.tv_launcher_activity_main;
     }
 
-    public void initPackageInfo(){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                packageInfos = SystemUtils.getAllApps(HomeActivity.this,3,true);
-            }
-        }.start();
+    @Subscriber
+    public void refreshData(List<PackageInfo> pis){
+        if(moreFragment != null){
+            moreFragment.refreshData(pis);
+        }
     }
 
     private void initFocusBorder() {
@@ -123,7 +136,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                     .asColor()
                     .borderColor(getResources().getColor(R.color.public_white))
                     .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3)
-//                    .shadowColor(getResources().getColor(R.color.public_white))
+                    .shadowColor(getResources().getColor(R.color.public_white))
                     .animDuration(180L)
                     .build(this);
         }
@@ -144,15 +157,149 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
+        if(mPresenter == null) return;
+        DownloadUtil.get().init(this);
+
         packageManager = this.getPackageManager();
         mHandler = new Handler();
-
+        mPresenter.initConfig(this);
+        infoBeans = mPresenter.fetchInfoBeans();
         initFocusBorder();
-        initListener();
+        initRecycler();
         initPackageInfo();
-
         showTime();
+        mPresenter.fetchHomeData();
+        mPresenter.fetchHomeShortCut(this);
+        register();
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregister();
+    }
+
+    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
+        if(null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
+        }
+    }
+
+    public void updateHome(){
+        infoBeans = mPresenter.fetchInfoBeans();
+        homeAdapter.clearDatas();
+        homeAdapter.appendDatas(infoBeans);
+        homeAdapter.notifyDataSetChanged();
+    }
+
+    private void initRecycler() {
+        // home
+        homeAdapter = new CommonRecyclerViewAdapter<InfoBean>(this) {
+            @Override
+            public int getItemLayoutId(int viewType) {
+                return R.layout.tv_launcher_home_item;
+            }
+
+            @Override
+            public void onBindItemHolder(CommonRecyclerViewHolder helper, InfoBean item, int position) {
+                final View itemView = helper.itemView;
+
+                if(!"".equals(item.getImg_url())){
+                    ImageView imageView = (ImageView)helper.getHolder().getView(R.id.home_img);
+                    mImageLoader.loadImage(itemView.getContext(),
+                            CommonImageConfigImpl
+                                    .builder()
+                                    .url(String.format(Contanst.downmain,item.getImg_url()))
+                                    .imageView(imageView)
+                                    .build());
+                }
+
+                final SpannableGridLayoutManager.LayoutParams lp =
+                        (SpannableGridLayoutManager.LayoutParams) itemView.getLayoutParams();
+                int colSpan = 0;
+                int rowSpan = 0;
+
+                switch (position){
+                    case 0:
+                        colSpan = 5;
+                        rowSpan = 8;
+                        break;
+                    case 7:
+                        colSpan = 6;
+                        rowSpan = 3;
+                        break;
+                    case 1:
+                    case 4:
+                    case 5:
+                    case 6:
+                        colSpan = 4;
+                        rowSpan = 4;
+                        break;
+                    case 2:
+                    case 3:
+                        colSpan = 3;
+                        rowSpan = 5;
+                        break;
+                }
+
+                if (lp.rowSpan != rowSpan || lp.colSpan != colSpan) {
+                    lp.rowSpan = rowSpan;
+                    lp.colSpan = colSpan;
+                    itemView.setLayoutParams(lp);
+                }
+            }
+        };
+
+        mTvRecyclerHome.setOnItemListener(new SimpleOnItemListener(){
+            @Override
+            public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+                onMoveFocusBorder(itemView, 1.05f, 0);
+            }
+
+            @Override
+            public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+                InfoBean infoBean = (InfoBean) homeAdapter.getItem(position);
+                String pkg = infoBean.getPkg();
+                if(!AppUtils.isAppInstalled(HomeActivity.this,pkg)){
+                    // 下载app并安装
+                    GCircleProgress progress = (GCircleProgress)itemView.findViewById(R.id.gcircle_progress);
+                    mPresenter.download(HomeActivity.this,String.format(Contanst.downmain,infoBean.getUrl()),progress);
+                    return;
+                }
+                Intent intent;
+                if("0".equals(infoBean.getWay())){
+                    SystemUtils.openApk(HomeActivity.this,pkg);
+                }else if("1".equals(infoBean.getWay())){
+                    try {
+                        intent = Intent.parseUri(infoBean.getWay_val(), 0);
+                        startActivity(intent);
+                    } catch (URISyntaxException e) {
+                        // TODO Auto-generated catch block
+                    }
+                }else if("2".equals(infoBean.getWay())){
+                    try {
+                        intent = Intent.parseUri(infoBean.getWay_val(), 0);
+                        sendBroadcast(intent);
+                    } catch (URISyntaxException e) {
+                        // TODO Auto-generated catch block
+                    }
+                }
+            }
+        });
+
+        mTvRecyclerHome.setOnItemKeyListener(new TvRecyclerView.OnItemKeyListener() {
+            @Override
+            public boolean onItemKey(View v, int keyCode, KeyEvent event,int position) {
+
+                return false;
+            }
+        });
+
+        homeAdapter.setDatas(infoBeans);
+        mTvRecyclerHome.setSpacingWithMargins(2,1);
+        mTvRecyclerHome.setAdapter(homeAdapter);
+
+        // shortcuts
         mAdapter = new CommonRecyclerViewAdapter<String>(this) {
             @Override
             public int getItemLayoutId(int viewType) {
@@ -181,50 +328,6 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
 
             }
         };
-
-        mAdapter.setDatas(shortcuts);
-        mTvRecyclerView.setSpacingWithMargins(5,5);
-        mTvRecyclerView.setAdapter(mAdapter);
-
-        if(mPresenter != null){
-            mPresenter.fetchHomeData();
-            mPresenter.fetchHomeShortCut(this);
-//            mPresenter.fetchDao(this);
-        }
-        register();
-    }
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregister();
-    }
-
-    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
-        if(null != mFocusBorder) {
-            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
-        }
-    }
-
-    private void initListener() {
-
-        if(mHomeMain != null){
-            for (int i = 0; i< mHomeMain.getChildCount(); i++){
-                View view = mHomeMain.getChildAt(i);
-                view.setTag("10"+(i+1));
-                view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus){
-                            onMoveFocusBorder(v, 1.05f, 0);
-                        }
-                    }
-                });
-                view.setOnKeyListener(this);
-            }
-        }
 
         mTvRecyclerView.setOnItemListener(new SimpleOnItemListener() {
 
@@ -266,6 +369,27 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                 }
             }
         });
+
+        mTvRecyclerView.setOnItemKeyListener(new TvRecyclerView.OnItemKeyListener() {
+            @Override
+            public boolean onItemKey(View v, int keyCode, KeyEvent event,int position) {
+                if(event.getAction() == KeyEvent.ACTION_DOWN){
+                    switch (keyCode){
+                        case KeyEvent.KEYCODE_MENU:
+                            oldpkg = (String) mAdapter.getItem(position);
+                            if(!HomeActivity.this.getPackageName().equals(oldpkg)){
+                                //showFragment(MoreFragment.CHECK_FRAGMENT);
+                            }
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
+        mAdapter.setDatas(shortcuts);
+        mTvRecyclerView.setSpacingWithMargins(5,5);
+        mTvRecyclerView.setAdapter(mAdapter);
     }
 
     public void showFragment(String type){
@@ -303,7 +427,9 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                     moreFragment.setCheckListener(new MoreFragment.CheckListener() {
                         @Override
                         public void onItemClick(TvRecyclerView parent, View itemView, int position, Object item) {
-
+                            PackageInfo info = (PackageInfo)item;
+                            mPresenter.replaceHomeShortCut(HomeActivity.this,info.applicationInfo.packageName,oldpkg);
+                            mPresenter.fetchHomeShortCut(HomeActivity.this);
                         }
                     });
                 }
@@ -469,6 +595,17 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             }.start();
 
         }
+    }
+
+    public void   initPackageInfo(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                packageInfos = SystemUtils.getAllApps(HomeActivity.this,3,true);
+                EventBus.getDefault().post(packageInfos);
+            }
+        }.start();
     }
 
     //=======================广播====================

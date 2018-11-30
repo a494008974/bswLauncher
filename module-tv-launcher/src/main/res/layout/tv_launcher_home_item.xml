@@ -3,12 +3,19 @@
     android:focusable="true"
     android:clickable="true"
     android:focusableInTouchMode="true"
+    android:background="@drawable/public_shape_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ImageView
+        android:id="@+id/home_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/public_shape_item"
+        android:scaleType="fitXY"
         />
+
+    <com.mylove.tvlauncher.mvp.ui.widget.GCircleProgress
+        android:id="@+id/gcircle_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </FrameLayout>

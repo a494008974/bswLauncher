@@ -16,7 +16,7 @@ public class TVLauncherInfo  implements BaseInfo {
 
     @Override
     public String getUrl() {
-        return RouterHub.LAUNCHER_HOMEACTIVITY;
+        return RouterHub.TVLAUNCHER_HOMEACTIVITY;
     }
 
     public TVLauncherInfo(String name) {

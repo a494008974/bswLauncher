@@ -4,16 +4,28 @@ import android.app.Application;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.jess.arms.base.delegate.AppLifecycles;
+import com.jess.arms.di.module.ClientModule;
 import com.jess.arms.di.module.GlobalConfigModule;
 import com.jess.arms.integration.ConfigModule;
 import com.jess.arms.utils.ArmsUtils;
+import com.mylove.tvlauncher.mvp.model.decrypt.JsonConverterFactory;
 import com.squareup.leakcanary.RefWatcher;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.mylove.tvlauncher.BuildConfig;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okio.Buffer;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * ================================================
@@ -33,7 +45,13 @@ public final class GlobalConfiguration implements ConfigModule {
 
     @Override
     public void applyOptions(Context context, GlobalConfigModule.Builder builder) {
-
+        builder.retrofitConfiguration(new ClientModule.RetrofitConfiguration() {
+            @Override
+            public void configRetrofit(Context context, Retrofit.Builder builder) {
+                builder.addConverterFactory(JsonConverterFactory.create())
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+            }
+        });
     }
 
     @Override
@@ -64,4 +82,6 @@ public final class GlobalConfiguration implements ConfigModule {
             });
         }
     }
+
+
 }
