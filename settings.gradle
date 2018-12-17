@@ -6,4 +6,5 @@ include ':app', ':module-zhou',
         ':CommonRes',
         ':module-gank',
         ':ThirdLibrarys:tvrecyclerview',
+		':ThirdLibrarys:slideanimation',
 		':module-tv-launcher'

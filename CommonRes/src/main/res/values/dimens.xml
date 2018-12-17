@@ -11,6 +11,7 @@
     <dimen name="public_font_18sp">18sp</dimen>
     <dimen name="public_font_20sp">20sp</dimen>
     <dimen name="public_font_24sp">24sp</dimen>
+    <dimen name="public_font_28sp">28sp</dimen>
     <dimen name="public_font_30sp">30sp</dimen>
     <dimen name="public_font_32sp">32sp</dimen>
     <dimen name="public_font_36sp">36sp</dimen>

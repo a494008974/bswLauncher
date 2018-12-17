@@ -13,10 +13,13 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v7.widget.ViewUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.bumptech.glide.load.DecodeFormat;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.http.imageloader.ImageLoader;
@@ -35,6 +39,7 @@ import com.mylove.tvlauncher.R;
 import com.mylove.tvlauncher.R2;
 import com.mylove.tvlauncher.app.utils.AppUtils;
 import com.mylove.tvlauncher.app.utils.Contanst;
+import com.mylove.tvlauncher.app.utils.ImageLoaderHelper;
 import com.mylove.tvlauncher.app.utils.SystemUtils;
 import com.mylove.tvlauncher.app.utils.ToastUtils;
 
@@ -61,10 +66,12 @@ import java.util.List;
 import butterknife.BindView;
 import me.jessyan.armscomponent.commonsdk.core.RouterHub;
 import me.jessyan.armscomponent.commonsdk.imgaEngine.config.CommonImageConfigImpl;
+import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
+import me.jessyan.armscomponent.commonsdk.utils.Utils;
 import me.jessyan.armscomponent.commonservice.dao.InfoBean;
 
 @Route(path = RouterHub.TVLAUNCHER_HOMEACTIVITY)
-public class HomeActivity extends BaseActivity<HomePresenter> implements HomeContract.View,View.OnKeyListener{
+public class HomeActivity extends BaseActivity<HomePresenter> implements HomeContract.View{
 
     @BindView(R2.id.tv_recycler_home)
     TvRecyclerView mTvRecyclerHome;
@@ -106,6 +113,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     private boolean dismiss;
     private ImageLoader mImageLoader;
 
+    private Typeface typeface;
     private String oldpkg;
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -143,7 +151,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     }
 
     public void showTime(){
-        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/Roboto-Thin.ttf");
+        typeface = Typeface.createFromAsset(getAssets(),"fonts/Roboto-Thin.ttf");
         mLauncherTime.setTypeface(typeface);
         mLauncherStatu.setTypeface(typeface);
         mLauncherDate.setTypeface(typeface);
@@ -160,6 +168,14 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         if(mPresenter == null) return;
         DownloadUtil.get().init(this);
 
+        if(Environment.isExternalStorageEmulated()){
+            Contanst.path = Environment.getExternalStorageDirectory().getPath()+"/mbox";
+        }else{
+            Contanst.path = this.getExternalFilesDir(null).getPath()+"/mbox";
+        }
+        FileUtils.createOrExistsDir(Contanst.path);
+        FileUtils.deleteDir(Contanst.path);
+
         packageManager = this.getPackageManager();
         mHandler = new Handler();
         mPresenter.initConfig(this);
@@ -168,9 +184,18 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         initRecycler();
         initPackageInfo();
         showTime();
-        mPresenter.fetchHomeData();
+
         mPresenter.fetchHomeShortCut(this);
         register();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!clearDone){
+            clearDone = true;
+            new ClearAsyn().execute();
+        }
     }
 
     @Override
@@ -201,19 +226,9 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             }
 
             @Override
-            public void onBindItemHolder(CommonRecyclerViewHolder helper, InfoBean item, int position) {
+            public void onBindItemHolder(CommonRecyclerViewHolder helper, InfoBean infoBean, int position) {
+
                 final View itemView = helper.itemView;
-
-                if(!"".equals(item.getImg_url())){
-                    ImageView imageView = (ImageView)helper.getHolder().getView(R.id.home_img);
-                    mImageLoader.loadImage(itemView.getContext(),
-                            CommonImageConfigImpl
-                                    .builder()
-                                    .url(String.format(Contanst.downmain,item.getImg_url()))
-                                    .imageView(imageView)
-                                    .build());
-                }
-
                 final SpannableGridLayoutManager.LayoutParams lp =
                         (SpannableGridLayoutManager.LayoutParams) itemView.getLayoutParams();
                 int colSpan = 0;
@@ -222,23 +237,23 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                 switch (position){
                     case 0:
                         colSpan = 5;
-                        rowSpan = 8;
-                        break;
-                    case 7:
-                        colSpan = 6;
-                        rowSpan = 3;
+                        rowSpan = 9;
                         break;
                     case 1:
+                    case 2:
+                    case 3:
                     case 4:
-                    case 5:
-                    case 6:
+                        colSpan = 4;
+                        rowSpan = 5;
+                        break;
+                    case 7:
                         colSpan = 4;
                         rowSpan = 4;
                         break;
-                    case 2:
-                    case 3:
-                        colSpan = 3;
-                        rowSpan = 5;
+                    case 5:
+                    case 6:
+                        colSpan = 6;
+                        rowSpan = 4;
                         break;
                 }
 
@@ -247,6 +262,70 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                     lp.colSpan = colSpan;
                     itemView.setLayoutParams(lp);
                 }
+
+                ImageView homeIcon = (ImageView)helper.getHolder().getView(R.id.home_icon);
+                ImageView homeIMG = (ImageView)helper.getHolder().getView(R.id.home_img);
+                TextView homeName = (TextView)helper.getHolder().getView(R.id.home_name);
+
+                homeIcon.setVisibility(View.GONE);
+                homeIMG.setVisibility(View.GONE);
+                homeName.setVisibility(View.GONE);
+
+                if("1".equals(infoBean.getIs_hold()) && "0".equals(infoBean.getIs_lock())){
+                    PackageInfo pkgInfo = null;
+                    try {
+                        pkgInfo = packageManager.getPackageInfo(infoBean.getPkg(), PackageManager.GET_PERMISSIONS);
+                    } catch (PackageManager.NameNotFoundException e) {
+                    }
+                    homeName.setTypeface(typeface);
+                    if(pkgInfo != null){
+                        homeIcon.setImageDrawable(packageManager.getApplicationIcon(pkgInfo.applicationInfo));
+                        homeName.setText(packageManager.getApplicationLabel(pkgInfo.applicationInfo));
+                        homeIcon.setVisibility(View.VISIBLE);
+                        homeName.setVisibility(View.VISIBLE);
+                    }else{
+                        if(!"".equals(infoBean.getIco())){
+//                            ImageLoaderHelper.getInstance().load(HomeActivity.this,String.format(Contanst.downmain,infoBean.getIco()),homeIcon);
+                            mImageLoader.loadImage(itemView.getContext(),
+                                    CommonImageConfigImpl
+                                            .builder()
+                                            .setDecodeFormate(DecodeFormat.PREFER_ARGB_8888)
+                                            .blurValue(1)
+                                            .url(String.format(Contanst.downmain,infoBean.getIco()))
+                                            .imageView(homeIcon)
+                                            .build());
+                        }
+                        if(!"".equals(infoBean.getTitle())){
+                            homeName.setText(infoBean.getTitle());
+                        }
+                        homeIcon.setVisibility(View.VISIBLE);
+                        homeName.setVisibility(View.VISIBLE);
+                    }
+
+                }else if("1".equals(infoBean.getIs_hold()) && "1".equals(infoBean.getIs_lock())){
+                    if(!"".equals(infoBean.getImg_url())){
+//                        ImageLoaderHelper.getInstance().load(HomeActivity.this,String.format(Contanst.downmain,infoBean.getImg_url()),homeIMG);
+                        mImageLoader.loadImage(HomeActivity.this,
+                                CommonImageConfigImpl
+                                        .builder()
+                                        .setDecodeFormate(DecodeFormat.PREFER_ARGB_8888)
+                                        .blurValue(0)
+                                        .resize(400,600)
+                                        .url(String.format(Contanst.downmain,infoBean.getImg_url()))
+                                        .imageView(homeIMG)
+                                        .build());
+                        homeIMG.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    if("108".equals(infoBean.getTag())){
+                        homeIcon.setImageResource(R.drawable.launcher_icon_108);
+                        homeName.setText(R.string.launcher_apps);
+                        homeIcon.setVisibility(View.VISIBLE);
+                        homeName.setVisibility(View.VISIBLE);
+                    }
+                }
+
+
             }
         };
 
@@ -254,16 +333,30 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
                 onMoveFocusBorder(itemView, 1.05f, 0);
+                Log.e("ZZZZ","width => "+ itemView.getWidth()+ "  height => "+itemView.getHeight());
             }
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
                 InfoBean infoBean = (InfoBean) homeAdapter.getItem(position);
+
+                if("108".equals(infoBean.getTag())){
+                    Utils.navigation(HomeActivity.this, RouterHub.TVLAUNCHER_MOREACTIVITY);
+                    return;
+                }
+
                 String pkg = infoBean.getPkg();
                 if(!AppUtils.isAppInstalled(HomeActivity.this,pkg)){
                     // 下载app并安装
                     GCircleProgress progress = (GCircleProgress)itemView.findViewById(R.id.gcircle_progress);
-                    mPresenter.download(HomeActivity.this,String.format(Contanst.downmain,infoBean.getUrl()),progress);
+                    progress.setVisibility(View.VISIBLE);
+                    String url = "";
+                    if("1".equals(infoBean.getIs_link())){
+                        url = infoBean.getLink();
+                    }else{
+                        url = String.format(Contanst.downmain,infoBean.getUrl());
+                    }
+                    mPresenter.download(HomeActivity.this,url,progress);
                     return;
                 }
                 Intent intent;
@@ -344,6 +437,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                     } catch (PackageManager.NameNotFoundException e) {
                     }
                 }
+                mLauncherFocusTv.setTypeface(typeface);
                 mLauncherFocusTv.setText(s);
                 Animation tvAnim = AnimationUtils.loadAnimation(HomeActivity.this, R.anim.launcher_tv_translate_1);
                 mLauncherFocusTv.startAnimation(tvAnim);
@@ -393,9 +487,9 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
     }
 
     public void showFragment(String type){
-        moreFragment = MoreFragment.newInstance();
+        moreFragment = new MoreFragment();
         if(moreFragment != null){
-            if (!moreFragment.isAdded()){
+
                 if (packageInfos == null) {
                     packageInfos = SystemUtils.getAllApps(HomeActivity.this,3,true);
                 }
@@ -434,14 +528,15 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                     });
                 }
                 moreFragment.setPackageInfos(packageInfos);
-                moreFragment.show(getSupportFragmentManager(),type);
-            }
+                if(!moreFragment.isAdded()){
+                    moreFragment.show(getSupportFragmentManager(),type);
+                }
         }
     }
 
     @Override
     public void onBackPressed() {
-
+/*
         //获取第一次按键时间
         long mNowTime = System.currentTimeMillis();
         //比较两次按键时间差
@@ -452,7 +547,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         } else {
             super.onBackPressed();
         }
-
+*/
     }
 
     @Override
@@ -505,68 +600,6 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
 
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN){
-            switch (keyCode){
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                case KeyEvent.KEYCODE_ENTER:
-                    String tag = String.valueOf(v.getTag());
-                    switch (tag){
-                        case "101":
-                            SystemUtils.openApk(this,"org.xbmc.kodi");
-                            break;
-                        case "102":
-                            SystemUtils.openApk(this,"com.android.vending");
-                            break;
-                        case "103":
-                            SystemUtils.openApk(this,"com.google.android.youtube.tv");
-                            break;
-                        case "104":
-                            SystemUtils.openApk(this,"com.droidlogic.FileBrower");
-                            break;
-                        case "105":
-                            SystemUtils.openApk(this,"com.android.chrome");
-                            break;
-                        case "106":
-                            //settings
-                            try{
-                                Intent intent = new Intent();
-                                intent.setClassName("com.android.tv.settings","com.mylove.tv.settings.MainActivity");
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                HomeActivity.this.startActivity(intent);
-                            }catch (Exception e){
-
-                            }
-                            break;
-                        case "107":
-                            //memory recycle
-                            View clear = ((ViewGroup)v).getChildAt(0);
-                            if(clear != null && clear instanceof ImageView){
-                                anim = (ImageView) clear;
-                                animationDrawable = (AnimationDrawable)anim.getBackground();
-                                animationDrawable.start();
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(!clearDone){
-                                            clearDone = true;
-                                            new ClearAsyn().execute();
-                                        }
-                                    }
-                                },1600);
-                            }
-                            break;
-                        case "108":
-                            showFragment(MoreFragment.MORE_FRAGMENT);
-                            break;
-                    }
-                    break;
-            }
-        }
-        return false;
-    }
-
     private class ClearAsyn extends AsyncTask<Void,Void,List<ActivityManager.RunningAppProcessInfo>>{
 
         @Override
@@ -578,12 +611,12 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
         @Override
         protected void onPostExecute(final List<ActivityManager.RunningAppProcessInfo> recycle) {
             super.onPostExecute(recycle);
-            if(animationDrawable != null){
-                animationDrawable.stop();
-            }
-            int sum = SystemUtils.clearMemory(HomeActivity.this,recycle);
-            String s = String.format(getString(R.string.launcher_mem_clear),sum);
-            ToastUtils.showCenter(HomeActivity.this,s);
+//            if(animationDrawable != null){
+//                animationDrawable.stop();
+//            }
+//            int sum = SystemUtils.clearMemory(HomeActivity.this,recycle);
+//            String s = String.format(getString(R.string.launcher_mem_clear),sum);
+//            ToastUtils.showCenter(HomeActivity.this,s);
             clearDone = false;
 
             new Thread(){
@@ -700,7 +733,7 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
             }
         }
     }
-
+    boolean done = false;
     NetWorkChangeReceiver mNetWorkChangeReceiver;
     public class NetWorkChangeReceiver extends BroadcastReceiver {
         private ConnectivityManager connectivityManager;
@@ -712,6 +745,10 @@ public class HomeActivity extends BaseActivity<HomePresenter> implements HomeCon
                 connectivityManager = (ConnectivityManager) HomeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo mNetworkInfo = connectivityManager.getActiveNetworkInfo();
                 if(mNetworkInfo != null && mNetworkInfo.isAvailable()){
+                    if(!done){
+                        mPresenter.fetchHomeData();
+                        done = true;
+                    }
                     switch (mNetworkInfo.getType()) {
                         case  ConnectivityManager.TYPE_WIFI:
                             mLauncherNet.setImageResource(R.drawable.launcher_iv_wifi);

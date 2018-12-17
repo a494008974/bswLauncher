@@ -163,14 +163,16 @@ public class AppUtils {
         return pName.contains(packageName);
     }
 
-    public static void openApp(Context ctx, String pkgname){
+    public static boolean openApp(Context ctx, String pkgname){
         try {
             PackageManager pm = ctx.getPackageManager();
             Intent intent = pm.getLaunchIntentForPackage(pkgname);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ctx.startActivity(intent);
+            return true;
         }catch (Exception e){
         }
+        return false;
     }
 
     public static void install(Context ctx, String filename) {
@@ -179,7 +181,7 @@ public class AppUtils {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            data = FileProvider.getUriForFile(ctx, "com.mylove.store.install", apk);
+            data = FileProvider.getUriForFile(ctx, "com.mylove.tvlauncher.install", apk);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } else {
             data = Uri.fromFile(apk);

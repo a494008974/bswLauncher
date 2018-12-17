@@ -31,7 +31,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:singleLine="true"
-        android:textSize="24sp" />
+        android:textSize="@dimen/public_font_24sp" />
 
     <ImageView
         android:id="@+id/launcher_item_check"

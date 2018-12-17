@@ -31,6 +31,7 @@ import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -377,7 +378,7 @@ public class SystemUtils {
 		PackageManager pManager = context.getPackageManager();
 		List<PackageInfo> sysApps = new ArrayList<PackageInfo>();
 		List<PackageInfo> userApps = new ArrayList<PackageInfo>();
-		PackageInfo defaultPak = null;
+		PackageInfo defaultPak = null,live = null;
 		//获取手机内所有应用
 		List<PackageInfo> paklist = pManager.getInstalledPackages(0);
 
@@ -401,6 +402,8 @@ public class SystemUtils {
 				userApps.add(pak);
 			}
 		}
+		Collections.reverse(userApps);
+
 		switch (type){
 			case 0:
 				if (defaultPak != null && add)sysApps.add(defaultPak);
@@ -472,7 +475,7 @@ public class SystemUtils {
 								|| "com.sohu.inputmethod.sogoupad".equals(processName)
 								|| "com.ce3g.android.v5im".equals(processName)
 								|| processName.contains("com.hpplay")
-								|| processName.contains("com.mylove")
+//								|| processName.contains("com.mylove")
 								|| processName.contains("com.softwinner")
 								|| processName.contains("com.android")
 				)){

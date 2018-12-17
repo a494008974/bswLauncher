@@ -23,7 +23,7 @@
         android:paddingBottom="10dp"
         android:layout_marginRight="150dp"
         android:layout_marginLeft="150dp"
-        android:layout_marginTop="520dp"
+        android:layout_marginTop="530dp"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
         app:tv_isMenu="true"
@@ -35,9 +35,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/public_white"
+        android:textColor="@color/public_color_DDFFFF"
         android:layout_marginTop="640dp"
-        android:textSize="@dimen/public_font_32sp"/>
+        android:alpha="0.4"
+        android:textSize="@dimen/public_font_24sp"/>
 
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/tv_recycler_home"
@@ -47,10 +48,10 @@
         android:paddingLeft="150dp"
         android:paddingBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="430dp"
+        android:layout_height="440dp"
         android:orientation="vertical"
-        app:tv_numColumns="19"
-        app:tv_numRows="8"
+        app:tv_numColumns="21"
+        app:tv_numRows="10"
         app:tv_layoutManager="SpannableGridLayoutManager">
     </com.owen.tvrecyclerview.widget.TvRecyclerView>
 </FrameLayout>

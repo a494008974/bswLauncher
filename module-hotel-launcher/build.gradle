@@ -102,5 +102,7 @@ dependencies {
     implementation rootProject.ext.dependencies["andserverApi"]
     annotationProcessor rootProject.ext.dependencies["andserverProcessor"]
 
+    implementation project(':ThirdLibrarys:tvrecyclerview')
+    implementation project(':ThirdLibrarys:slideanimation')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

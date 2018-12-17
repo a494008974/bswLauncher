@@ -8,14 +8,42 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/home_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/home_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textSize="@dimen/public_font_18sp"
+        android:textColor="@color/public_white"
+        android:duplicateParentState="true"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:text="@string/app_name"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:visibility="gone"
+        android:gravity="center"/>
+
+    <ImageView
         android:id="@+id/home_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:visibility="gone"
         />
 
     <com.mylove.tvlauncher.mvp.ui.widget.GCircleProgress
         android:id="@+id/gcircle_progress"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </FrameLayout>

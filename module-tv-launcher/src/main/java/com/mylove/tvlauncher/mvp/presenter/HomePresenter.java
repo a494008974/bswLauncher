@@ -4,10 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.airbnb.lottie.L;
 import com.jess.arms.mvp.BasePresenter;
 import com.jess.arms.utils.DataHelper;
 import com.mylove.tvlauncher.R;
+import com.mylove.tvlauncher.app.utils.AppUtils;
 import com.mylove.tvlauncher.app.utils.Contanst;
+import com.mylove.tvlauncher.app.utils.SystemUtils;
 import com.mylove.tvlauncher.app.utils.down.DownloadCallback;
 import com.mylove.tvlauncher.app.utils.down.DownloadRecord;
 import com.mylove.tvlauncher.app.utils.down.DownloadRequest;
@@ -23,6 +26,7 @@ import javax.inject.Inject;
 
 import io.reactivex.internal.observers.BlockingBaseObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.jessyan.armscomponent.commonsdk.utils.FileUtils;
 import me.jessyan.armscomponent.commonservice.CommonApp;
 import me.jessyan.armscomponent.commonservice.dao.ClsBean;
 import me.jessyan.armscomponent.commonservice.dao.DaoHelper;
@@ -69,31 +73,39 @@ public class HomePresenter extends BasePresenter<HomeContract.Model,HomeContract
 
     public void download(Context context,String url, final GCircleProgress progress){
         DownloadRequest request = DownloadRequest.newBuilder()
-                .downloadUrl(url)
-                .downloadDir(context.getFilesDir().getPath())
-                .downloadName(DownloadUtil.getMD5(url))
-                .downloadListener(new DownloadCallback(){
-                    @Override
-                    public void onProgress(DownloadRecord record) {
-                        super.onProgress(record);
-                        Log.e("ZZZZ","Progress => "+record.getProgress());
-                        progress.setProgress(record.getProgress());
-                    }
+        .downloadUrl(url)
+        .downloadDir(Contanst.path)
+        .downloadName(DownloadUtil.getMD5(url))
+        .downloadListener(new DownloadCallback(){
+            @Override
+            public void onProgress(DownloadRecord record) {
+                super.onProgress(record);
+                progress.setProgress(record.getProgress());
+            }
 
-                    @Override
-                    public void onFailed(DownloadRecord record, String errMsg) {
-                        super.onFailed(record, errMsg);
-                    }
+            @Override
+            public void onFailed(DownloadRecord record, String errMsg) {
+                super.onFailed(record, errMsg);
+                DownloadUtil.get().taskRemove(record.getId());
+            }
 
-                    @Override
-                    public void onFinish(DownloadRecord record) {
-                        super.onFinish(record);
-
-                    }
-                })
-                .build();
+            @Override
+            public void onFinish(DownloadRecord record) {
+                super.onFinish(record);
+                progress.setVisibility(View.GONE);
+                String path = record.getRequest().getFilePath();
+                AppUtils.install(context,path);
+                DownloadUtil.get().taskRemove(record.getId());
+            }
+        })
+        .build();
         DownloadUtil.get().registerListener(context);
-        String requestId = DownloadUtil.get().enqueue(request);
+        if(FileUtils.isFileExists(request.getFilePath())){
+            progress.setVisibility(View.GONE);
+            AppUtils.install(context,request.getFilePath());
+        }else {
+            DownloadUtil.get().enqueue(request);
+        }
     }
 
     public void fetchHomeData(){

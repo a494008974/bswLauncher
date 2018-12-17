@@ -342,7 +342,8 @@ public final class FileUtils {
                 }
             }
         }
-        return dir.delete();
+//        return dir.delete();
+        return true;
     }
 
     /**

@@ -42,7 +42,7 @@ import com.owen.tvrecyclerview.utils.Loger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class TvRecyclerView extends RecyclerView implements View.OnClickListener, View.OnFocusChangeListener,View.OnKeyListener{
+public class TvRecyclerView extends RecyclerView implements View.OnClickListener, View.OnFocusChangeListener,View.OnKeyListener,View.OnLongClickListener{
     private static final int DEFAULT_LOAD_MORE_BEFOREHAND_COUNT = 4;
     private static final Class<?>[] LAYOUT_MANAGER_CONSTRUCTOR_SIGNATURE =
             new Class[]{Context.class, AttributeSet.class, int.class};
@@ -67,7 +67,7 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
     private boolean mHasFocusWithPrevious = false;
 
 
-
+    private OnItemLongClickListener onLongClickListener;
     private OnItemKeyListener onItemKeyListener;
     private OnItemListener mOnItemListener;
     private OnInBorderKeyEventListener mOnInBorderKeyEventListener;
@@ -989,6 +989,7 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
     @Override
     public void onChildAttachedToWindow(View child) {
         if(child.isClickable() && !ViewCompat.hasOnClickListeners(child)) {
+            child.setOnLongClickListener(this);
             child.setOnClickListener(this);
             child.setOnKeyListener(this);
         }
@@ -1012,6 +1013,10 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
                 holder.itemView.setActivated(true);
             }
         }
+    }
+
+    public void setOnLongClickListener(OnItemLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
     }
 
     public void setOnItemKeyListener(OnItemKeyListener onItemKeyListener) {
@@ -1038,6 +1043,14 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
         return false;
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if(null != onLongClickListener && this != v) {
+            return onLongClickListener.onItemLongClick(TvRecyclerView.this, v, getChildAdapterPosition(v));
+        }
+        return false;
+    }
+
     public interface OnLoadMoreListener {
         boolean onLoadMore();
     }
@@ -1052,6 +1065,10 @@ public class TvRecyclerView extends RecyclerView implements View.OnClickListener
         void onItemSelected(TvRecyclerView parent, View itemView, int position);
 
         void onItemClick(TvRecyclerView parent, View itemView, int position);
+    }
+
+    public interface  OnItemLongClickListener{
+        boolean onItemLongClick(TvRecyclerView parent, View itemView, int position);
     }
 
     public interface  OnItemKeyListener{

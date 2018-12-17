@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mylove.tvlauncher">
+    package="com.mylove.tvlauncher"
+    android:sharedUserId="android.uid.system">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -24,12 +25,17 @@
     <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
     <uses-permission android:name="android.permission.DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
     <uses-permission android:name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" />
     <uses-permission android:name="android.permission.READ_FRAME_BUFFER" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-feature android:name="android.software.leanback" android:required="false" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
@@ -40,7 +46,8 @@
         android:supportsRtl="true"
         android:theme="@style/public_AppTheme">
 
-        <!-- autolayout meta
+        <!--
+        autolayout meta
         配置设计图的宽高,配合AutoLauout控件使用,在设计图尺寸以外的其它尺寸手机上,也能达到和设计图一样的效果
         注意: 本框架并不强制你使用 AutoLayout,如果你不想使用 AutoLayout,就不要配置下面的 meta-data
         -->
@@ -51,10 +58,12 @@
             android:name="design_height"
             android:value="1080" />
 
-        <!-- 每个业务组件需要声明两个 ConfigModule, CommonSDK 的 ConfigModule 和 业务组件自己的 ConfigModule
+        <!--
+        每个业务组件需要声明两个 ConfigModule, CommonSDK 的 ConfigModule 和 业务组件自己的 ConfigModule
         CommonSDK 的 ConfigModule 含有有每个组件都可共用的配置信息, 业务组件自己的 ConfigModule 含有自己独有的配置
         信息, 这样即可重用代码, 又可以允许每个组件可自行管理自己独有的配置信息, 如果业务组件没有独有的配置信息则只需要
-        声明 CommonSDK 的 ConfigModule -->
+        声明 CommonSDK 的 ConfigModule
+        -->
         <meta-data
             android:name="me.jessyan.armscomponent.commonsdk.core.GlobalConfiguration"
             android:value="ConfigModule" />
@@ -62,14 +71,32 @@
             android:name="com.mylove.tvlauncher.app.GlobalConfiguration"
             android:value="ConfigModule" />
 
-        <activity android:name="com.mylove.tvlauncher.mvp.ui.HomeActivity">
+        <activity
+            android:name=".mvp.ui.HomeActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
-                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mylove.tvlauncher.install"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path_files" />
+        </provider>
+
+        <activity android:name=".mvp.ui.MoreActivity"
+            android:launchMode="singleInstance">
+
+        </activity>
     </application>
+
 </manifest>

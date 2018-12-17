@@ -1,6 +1,7 @@
 package com.mylove.tvlauncher.mvp.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.integration.IRepositoryManager;
@@ -45,8 +46,8 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
 
         JSONObject jm = new JSONObject();
         try {
-            jm.put("model", "VA_3128");
-            jm.put("path", "DSMB1");
+            jm.put("model", "MINIBOX");
+            jm.put("path", "MINIBOX");
             jm.put("tem_index","happy_video_index");
             jm.put("serial", "0001");
         } catch (JSONException e) {
@@ -93,7 +94,7 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
     public String fetchDefault(Context context){
         StringBuffer sb = new StringBuffer();
         try {
-            InputStream inputStream = context.getAssets().open("default_shortcut");
+            InputStream inputStream = context.getAssets().open("home_shortcut");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String data = null;
             while((data = bufferedReader.readLine())!=null)

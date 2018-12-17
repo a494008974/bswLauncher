@@ -6,4 +6,6 @@ package com.mylove.tvlauncher.app.utils;
 
 public class Contanst {
     public final static String downmain = "http://down.on-best.com/%s";
+
+    public static String path;
 }

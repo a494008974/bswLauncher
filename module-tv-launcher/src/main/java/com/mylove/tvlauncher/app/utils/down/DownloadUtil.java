@@ -110,7 +110,7 @@ public class DownloadUtil {
         mBroadcastManager.unregisterReceiver(mReceiver);
         mTaskDispatcher.quit();
         stopAllTask();
-//        saveAll();
+        saveAll();
         sRecordMap.clear();
         sRecordMap = null;
         sDownloadPermit = null;
@@ -158,11 +158,11 @@ public class DownloadUtil {
         if (sRecordMap.get(request.getId()) != null) {
             return false;
         }
-        for (DownloadRecord record : sRecordMap.values()) {
-            if (record.getDownloadDir().equals(request.getDownloadDir())
-                    && record.getDownloadName().equals(request.getDownloadDir()))
-                return false;
-        }
+//        for (DownloadRecord record : sRecordMap.values()) {
+//            if (record.getDownloadDir().equals(request.getDownloadDir())
+//                    && record.getDownloadName().equals(request.getDownloadDir()))
+//                return false;
+//        }
         return true;
     }
 
@@ -178,6 +178,9 @@ public class DownloadUtil {
         return false;
     }
 
+    public void taskRemove(String taskId){
+        sRecordMap.remove(taskId);
+    }
     /**
      * @param taskId
      */
@@ -299,7 +302,10 @@ public class DownloadUtil {
             @Override
             public void onReceive(Context context, Intent intent) {
                 DownloadRecord record = DownloadUtil.parseRecord(intent);
-                DownloadListener listener = record.getRequest().getListener();
+                DownloadListener listener = null;
+                if(record != null && record.getRequest() != null){
+                    listener = record.getRequest().getListener();
+                }
                 if(listener == null) return;
                 String action = intent.getAction();
                 if(ACTION_NEW_TASK_ADD.equals(action)){
